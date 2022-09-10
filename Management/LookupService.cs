@@ -54,5 +54,26 @@ namespace Management
             return null;
         }
 
+
+        public static List<DatasourceTypesExtnl> SelDatasourceTypes(string connectionString)
+        {
+            try
+            {
+                DataTable dt = LookupDataAccess.SelDatasourceTypes(connectionString);
+
+                List<DatasourceTypesExtnl> datasourceTypesExtnl = new List<DatasourceTypesExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, datasourceTypesExtnl, "DataModel.ExternalModels.DatasourceTypesExtnl",
+                     new string[] { "DatasourceID", "Datasource", "Active" });
+
+                return datasourceTypesExtnl;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
     }
 }

@@ -259,3 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/API/ProjectAttachments/Project_Phantom.accdb
+/API/ProjectAttachments/Bebop-Coltrane-Mitchell Prod-09072022121958.xlsx
+/API/ProjectAttachments/2.3.5.1 RS Operated Hz Daily Production (08.24.2022).xlsx

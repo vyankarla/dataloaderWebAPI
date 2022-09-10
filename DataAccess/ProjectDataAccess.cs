@@ -77,7 +77,8 @@ namespace DataAccess
                                                 new SqlParameter("@CreatedBy", project.CreatedBy),
                                                 new SqlParameter("@CreatedOnDt", project.CreatedOnDt),
                                                 new SqlParameter("@TotalRecords", project.TotalRecords),
-                                                new SqlParameter("@UserID", project.UserID)
+                                                new SqlParameter("@UserID", project.UserID),
+                                                new SqlParameter("@DatasourceID", project.DatasourceID)
                                                 };
 
                 ProjectID = Convert.ToInt32(SQLHelper.SqlHelper.ExecuteScalar(trans, CommandType.StoredProcedure, "[dataloader].[InsUpdProject]", paramsArray));

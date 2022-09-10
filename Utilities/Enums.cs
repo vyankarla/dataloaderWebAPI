@@ -29,5 +29,13 @@ namespace Utilities
             Pending = 2,
             Completed = 3
         }
+
+        public enum FileTypesEnum
+        {
+            Excel = 1,
+            CSV = 2,
+            AccessDB = 3
+        }
+
     }
 }

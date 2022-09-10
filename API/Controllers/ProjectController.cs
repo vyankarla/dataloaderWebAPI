@@ -15,6 +15,7 @@ using System.IO;
 using ClosedXML.Excel;
 using System.Data;
 using API.App_Start;
+using static Utilities.Enums;
 
 namespace API.Controllers
 {
@@ -56,13 +57,29 @@ namespace API.Controllers
 
         [HttpPost]
         [ActionName("ImportDataFinishStepForExcelType")]
-        public IHttpActionResult InsUpdImportDataFinish([FromBody] ImportDataFinish importDataFinish, string uploadedFilePath, string loggedInUserName)
+        public IHttpActionResult InsUpdImportDataFinish([FromBody] ImportDataFinish importDataFinish, string loggedInUserName)
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+
+            if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.Excel) ||
+                importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.CSV))
+            {
+                returnData = ProcessExcelFile(importDataFinish, loggedInUserName);
+            }
+            else if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.AccessDB))
+            {
+            }
+
+            return Ok(returnData);
+        }
+
+        public ControllerReturnObject ProcessExcelFile(ImportDataFinish importDataFinish, string loggedInUserName)
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
                 //string serverFilePath = "ProjectAttachments\\Trade Data Loader 12.11.20-09052022210621.xlsx";
-                string serverFilePath = uploadedFilePath;
+                string serverFilePath = importDataFinish.projectInput.FileLocation;
                 string fileFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), serverFilePath);
                 //string fileFullLocation = Path.Combine(p.GetValueByKeyAppSettings("ServerAddressToFetchUploadedFiles"), serverFilePath);
 
@@ -110,8 +127,41 @@ namespace API.Controllers
                 returnData.Message = ex.Message;
             }
 
-            return Ok(returnData);
+            return returnData;
         }
+
+        public ControllerReturnObject ProcessAccessDB(ImportDataFinish importDataFinish, string loggedInUserName)
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+            try
+            {
+                string serverFilePath = "ProjectAttachments\\Project_Phantom.accdb";
+                //string serverFilePath = importDataFinish.projectInput.FileLocation;
+                string fileFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), serverFilePath);
+
+                //string connection = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileFullLocation + "";
+                //OleDbConnection cn = new OleDbConnection(connection);
+                //OleDbDataAdapter da = new OleDbDataAdapter("Select * from Table1", cn);
+                //DataSet ds = new DataSet();
+                //da.Fill(ds);
+
+
+                //int projectID = ProjectService.ImportDataFinishStepForExcelType(p.DBConnection, importDataFinish, loggedInUserName, dt);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                //returnData.Data = projectID;
+                returnData.Message = "Import Completed Successfully.";
+            }
+            catch (Exception ex)
+            {
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Data = "";
+                returnData.Message = ex.Message;
+            }
+
+            return returnData;
+        }
+
 
         //[HttpGet]
         //[ActionName("TestProcessFile")]

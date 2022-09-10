@@ -36,7 +36,8 @@ namespace Utilities
                 switch (exSql.Errors[0].Number)
                 {
                     case 547: // Foreign Key violation
-                        throw new InvalidOperationException("Some helpful description", exSql);
+                        //throw new InvalidOperationException("Some helpful description", exSql);
+                        throw new Exception("Foreign Key Violation: " + exSql.Message);
                     //break;
                     case 2601: // Primary key violation
                         throw new Exception("Duplicate", exSql);

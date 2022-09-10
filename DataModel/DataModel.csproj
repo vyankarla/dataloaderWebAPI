@@ -48,6 +48,7 @@
     <Compile Include="ExternalModels\ControllerReturnObject.cs" />
     <Compile Include="ExternalModels\DatasetTypeColumnsExtnl.cs" />
     <Compile Include="ExternalModels\DatasetTypesExtnl.cs" />
+    <Compile Include="ExternalModels\DatasourceTypesExtnl.cs" />
     <Compile Include="ExternalModels\FileTypesExtnl.cs" />
     <Compile Include="ExternalModels\LoginExtnl.cs" />
     <Compile Include="ExternalModels\ProjectExtnl.cs" />

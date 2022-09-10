@@ -30,5 +30,7 @@ namespace DataModel.InputModels
 
         public int UserID { get; set; }
 
+        public int DatasourceID { get; set; }
+
     }
 }

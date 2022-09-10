@@ -44,5 +44,22 @@ namespace DataAccess
         }
 
 
+        public static DataTable SelDatasourceTypes(string ConnectionString)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "[dataloader].[SelDatasourceTypes]");
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
     }
 }

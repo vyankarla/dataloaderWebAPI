@@ -72,6 +72,7 @@ namespace Management
             project.FileLocation = projectInput.FileLocation;
             project.Active = projectInput.Active;
             project.UserID = projectInput.UserID;
+            project.DatasourceID = projectInput.DatasourceID;
 
             project.CreatedBy = loggedInUserName;
             project.CreatedOnDt = DateTime.Now;
@@ -251,21 +252,23 @@ namespace Management
             }
             else
             {
-                if (isRequiredFlag)
-                {
-                    if (Convert.ToString(dataRow[excelColumnName]) != "")
-                    {
-                        return Convert.ToString(dataRow[excelColumnName]);
-                    }
-                    else
-                    {
-                        throw new Exception(excelColumnName + " is required in database, but there are some empty fields exists in excel. Please verify");
-                    }
-                }
-                else
-                {
-                    return Convert.ToString(dataRow[excelColumnName]);
-                }
+                //if (isRequiredFlag)
+                //{
+                //    if (Convert.ToString(dataRow[excelColumnName]) != "")
+                //    {
+                //        return Convert.ToString(dataRow[excelColumnName]);
+                //    }
+                //    else
+                //    {
+                //        throw new Exception(excelColumnName + " is required in database, but there are some empty fields exists in excel. Please verify");
+                //    }
+                //}
+                //else
+                //{
+                //    return Convert.ToString(dataRow[excelColumnName]);
+                //}
+
+                return Convert.ToString(dataRow[excelColumnName]);
             }
         }
 

@@ -28,6 +28,8 @@ namespace DataModel.BusinessObjects
 
         public int UserID { get; set; }
 
+        public int DatasourceID { get; set; }
+
         public string CreatedBy { get; set; }
 
         public DateTime CreatedOnDt { get; set; }
