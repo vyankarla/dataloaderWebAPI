@@ -16,6 +16,8 @@ using ClosedXML.Excel;
 using System.Data;
 using API.App_Start;
 using static Utilities.Enums;
+using System.Data.OleDb;
+using DataModel.BusinessObjects;
 
 namespace API.Controllers
 {
@@ -68,12 +70,13 @@ namespace API.Controllers
             }
             else if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.AccessDB))
             {
+                returnData = ProcessAccessDB(importDataFinish, loggedInUserName);
             }
 
             return Ok(returnData);
         }
 
-        public ControllerReturnObject ProcessExcelFile(ImportDataFinish importDataFinish, string loggedInUserName)
+        private ControllerReturnObject ProcessExcelFile(ImportDataFinish importDataFinish, string loggedInUserName)
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
@@ -130,7 +133,7 @@ namespace API.Controllers
             return returnData;
         }
 
-        public ControllerReturnObject ProcessAccessDB(ImportDataFinish importDataFinish, string loggedInUserName)
+        private ControllerReturnObject ProcessAccessDB(ImportDataFinish importDataFinish, string loggedInUserName)
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
@@ -139,14 +142,46 @@ namespace API.Controllers
                 //string serverFilePath = importDataFinish.projectInput.FileLocation;
                 string fileFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), serverFilePath);
 
-                //string connection = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileFullLocation + "";
-                //OleDbConnection cn = new OleDbConnection(connection);
-                //OleDbDataAdapter da = new OleDbDataAdapter("Select * from Table1", cn);
-                //DataSet ds = new DataSet();
-                //da.Fill(ds);
+                string strDSN = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + fileFullLocation;
+                string strSQL = "SELECT * FROM AC_DAILY";
+                // create Objects of ADOConnection and ADOCommand    
+                OleDbConnection myConn = new OleDbConnection(strDSN);
+                OleDbDataAdapter myCmd = new OleDbDataAdapter(strSQL, myConn);
+                myConn.Open();
+                DataSet dtSet = new DataSet();
+                myCmd.Fill(dtSet);
+                DataTable dTableAcDaily = dtSet.Tables[0];
 
 
-                //int projectID = ProjectService.ImportDataFinishStepForExcelType(p.DBConnection, importDataFinish, loggedInUserName, dt);
+                strSQL = "SELECT * FROM AC_PROPERTY";
+                myCmd = new OleDbDataAdapter(strSQL, myConn);
+                dtSet = new DataSet();
+                myCmd.Fill(dtSet);
+                DataTable dTableAcProperty = dtSet.Tables[0];
+                myConn.Close();
+
+
+                List<Dailyprod_Staging> prodStagingData = (from table1 in dTableAcDaily.AsEnumerable()
+                                                   join table2 in dTableAcProperty.AsEnumerable() on (string)table1["PROPNUM"] equals (string)table2["PROPNUM"]
+                                                   select new Dailyprod_Staging
+                                                   {
+                                                       AutoID = 0,
+                                                       API = (table2["API_10"]).ToString(),
+                                                       WELLNAME = (table2["WELL_NAME"]).ToString(),
+                                                       D_DATE = ( Convert.ToDateTime(table1["D_DATE"])).ToString("M/d/yyyy hh:mm:ss tt").Replace('-','/'),
+                                                       OIL = (table1["OIL"]).ToString(),
+                                                       GAS = (table1["GAS"]).ToString(),
+                                                       WATER = (table1["WATER"]).ToString(),
+                                                       TubingPsi = (table1["TBG_PSI"]).ToString(),
+                                                       CasingPsi = (table1["CSG_PSI"]).ToString(),
+                                                       Downtime = "",
+                                                       DowntimeReason = "",
+                                                       Choke = (table1["CHOKE"]).ToString(),
+                                                       Row_Created_By = loggedInUserName,
+                                                       Row_Created_Date = DateTime.Now
+                                                   }).ToList();
+
+                int projectID = ProjectService.ImportDataFinishStepForAccessDB(p.DBConnection, importDataFinish, loggedInUserName, prodStagingData);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 //returnData.Data = projectID;

@@ -59,6 +59,26 @@ namespace Management
             return 0;
         }
 
+        public static int ImportDataFinishStepForAccessDB(string connectionString, ImportDataFinish importDataFinish, string loggedInUserName, List<Dailyprod_Staging> prodStagingData)
+        {
+            try
+            {
+                List<DatasetTypeColumnsExtnl> datasetTypeColumnsExtnls = DatasetTypeColumnsService.SelDatasetTypeColumns(connectionString);
+
+                Project project = ProjectObjectMapping(importDataFinish.projectInput, loggedInUserName);
+                List<ProjectColumnMapping> projectColumnMappings = new List<ProjectColumnMapping>();
+
+                int projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, prodStagingData);
+
+                return projectID;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return 0;
+        }
+
         private static Project ProjectObjectMapping(ProjectInput projectInput, string loggedInUserName)
         {
             Project project = new Project();
@@ -147,53 +167,53 @@ namespace Management
             Boolean isDowntimeReasonRequired = false;
             Boolean isChokeIsRequired = false;
 
-            foreach (var item in datasetTypeColumnsExtnls)
-            {
-                if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.API))
-                {
-                    isAPIIsRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.WELLNAME))
-                {
-                    isWellNameRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.D_DATE))
-                {
-                    isDDateRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.OIL))
-                {
-                    isOilRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.GAS))
-                {
-                    isGasRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.WATER))
-                {
-                    isWaterRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.TubingPsi))
-                {
-                    isTubingPsiRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.CasingPsi))
-                {
-                    isCasingPsiRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.Downtime))
-                {
-                    isDowntimeRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.DowntimeReason))
-                {
-                    isDowntimeReasonRequired = item.isRequired;
-                }
-                else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.Choke))
-                {
-                    isChokeIsRequired = item.isRequired;
-                }
-            }
+            //foreach (var item in datasetTypeColumnsExtnls)
+            //{
+            //    if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.API))
+            //    {
+            //        isAPIIsRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.WELLNAME))
+            //    {
+            //        isWellNameRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.D_DATE))
+            //    {
+            //        isDDateRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.OIL))
+            //    {
+            //        isOilRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.GAS))
+            //    {
+            //        isGasRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.WATER))
+            //    {
+            //        isWaterRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.TubingPsi))
+            //    {
+            //        isTubingPsiRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.CasingPsi))
+            //    {
+            //        isCasingPsiRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.Downtime))
+            //    {
+            //        isDowntimeRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.DowntimeReason))
+            //    {
+            //        isDowntimeReasonRequired = item.isRequired;
+            //    }
+            //    else if (item.ColumnID == Convert.ToInt32(DatasetTypeColumnsEnum.Choke))
+            //    {
+            //        isChokeIsRequired = item.isRequired;
+            //    }
+            //}
 
             //GetSource Columns FROM Excel sheet
             string APIExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.API));
