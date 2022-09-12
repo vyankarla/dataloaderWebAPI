@@ -63,11 +63,18 @@ namespace Management
         {
             try
             {
+                //List<DatasetTypeColumnsExtnl> datasetTypeColumnsExtnls = DatasetTypeColumnsService.SelDatasetTypeColumns(connectionString);
+
+                //Project project = ProjectObjectMapping(importDataFinish.projectInput, loggedInUserName);
+                //List<ProjectColumnMapping> projectColumnMappings = new List<ProjectColumnMapping>();
+
+                //int projectID = ProjectDataAccess.InsUpdImportDataFinishTest(connectionString, project, projectColumnMappings, prodStagingData);
+
+
                 List<DatasetTypeColumnsExtnl> datasetTypeColumnsExtnls = DatasetTypeColumnsService.SelDatasetTypeColumns(connectionString);
 
                 Project project = ProjectObjectMapping(importDataFinish.projectInput, loggedInUserName);
                 List<ProjectColumnMapping> projectColumnMappings = new List<ProjectColumnMapping>();
-
                 int projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, prodStagingData);
 
                 return projectID;
@@ -292,6 +299,26 @@ namespace Management
             }
         }
 
+
+        //public static int ImportDataFinishStepForAccessDBTest(string connectionString, ImportDataFinish importDataFinish, string loggedInUserName, List<Dailyprod_Staging> lstStagingData)
+        //{
+        //    try
+        //    {
+        //        List<DatasetTypeColumnsExtnl> datasetTypeColumnsExtnls = DatasetTypeColumnsService.SelDatasetTypeColumns(connectionString);
+
+        //        Project project = ProjectObjectMapping(importDataFinish.projectInput, loggedInUserName);
+        //        List<ProjectColumnMapping> projectColumnMappings = new List<ProjectColumnMapping>();
+
+        //        int projectID = ProjectDataAccess.InsUpdImportDataFinishForAccessDBTest(connectionString, project, projectColumnMappings, lstStagingData);
+
+        //        return projectID;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+        //    }
+        //    return 0;
+        //}
 
 
     }

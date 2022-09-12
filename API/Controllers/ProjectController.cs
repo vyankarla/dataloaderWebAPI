@@ -63,6 +63,8 @@ namespace API.Controllers
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
 
+            importDataFinish.projectInput.FileLocation = MoveFileFromOneLocationToAnother(importDataFinish.projectInput.FileLocation);
+
             if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.Excel) ||
                 importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.CSV))
             {
@@ -138,8 +140,8 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                string serverFilePath = "ProjectAttachments\\Project_Phantom.accdb";
-                //string serverFilePath = importDataFinish.projectInput.FileLocation;
+                //string serverFilePath = "ProjectAttachments\\Project_Phantom.accdb";
+                string serverFilePath = importDataFinish.projectInput.FileLocation;
                 string fileFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), serverFilePath);
 
                 string strDSN = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + fileFullLocation;
@@ -161,30 +163,31 @@ namespace API.Controllers
                 myConn.Close();
 
 
-                List<Dailyprod_Staging> prodStagingData = (from table1 in dTableAcDaily.AsEnumerable()
-                                                   join table2 in dTableAcProperty.AsEnumerable() on (string)table1["PROPNUM"] equals (string)table2["PROPNUM"]
-                                                   select new Dailyprod_Staging
-                                                   {
-                                                       AutoID = 0,
-                                                       API = (table2["API_10"]).ToString(),
-                                                       WELLNAME = (table2["WELL_NAME"]).ToString(),
-                                                       D_DATE = ( Convert.ToDateTime(table1["D_DATE"])).ToString("M/d/yyyy hh:mm:ss tt").Replace('-','/'),
-                                                       OIL = (table1["OIL"]).ToString(),
-                                                       GAS = (table1["GAS"]).ToString(),
-                                                       WATER = (table1["WATER"]).ToString(),
-                                                       TubingPsi = (table1["TBG_PSI"]).ToString(),
-                                                       CasingPsi = (table1["CSG_PSI"]).ToString(),
-                                                       Downtime = "",
-                                                       DowntimeReason = "",
-                                                       Choke = (table1["CHOKE"]).ToString(),
-                                                       Row_Created_By = loggedInUserName,
-                                                       Row_Created_Date = DateTime.Now
-                                                   }).ToList();
+                List<Dailyprod_Staging> lstStagingData = (from table1 in dTableAcDaily.AsEnumerable()
+                                                           join table2 in dTableAcProperty.AsEnumerable() on (string)table1["PROPNUM"] equals (string)table2["PROPNUM"]
+                                                           select new Dailyprod_Staging
+                                                           {
+                                                               AutoID = 0,
+                                                               ProjectID = 0,
+                                                               API = (table2["API_10"]).ToString(),
+                                                               WELLNAME = (table2["WELL_NAME"]).ToString(),
+                                                               D_DATE = (Convert.ToDateTime(table1["D_DATE"])).ToString("M/d/yyyy hh:mm:ss tt").Replace('-', '/'),
+                                                               OIL = (table1["OIL"]).ToString(),
+                                                               GAS = (table1["GAS"]).ToString(),
+                                                               WATER = (table1["WATER"]).ToString(),
+                                                               TubingPsi = (table1["TBG_PSI"]).ToString(),
+                                                               CasingPsi = (table1["CSG_PSI"]).ToString(),
+                                                               Downtime = "",
+                                                               DowntimeReason = "",
+                                                               Choke = (table1["CHOKE"]).ToString(),
+                                                               Row_Created_By = loggedInUserName,
+                                                               Row_Created_Date = DateTime.Now
+                                                           }).ToList();
 
-                int projectID = ProjectService.ImportDataFinishStepForAccessDB(p.DBConnection, importDataFinish, loggedInUserName, prodStagingData);
+                int projectID = ProjectService.ImportDataFinishStepForAccessDB(p.DBConnection, importDataFinish, loggedInUserName, lstStagingData);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
-                //returnData.Data = projectID;
+                returnData.Data = projectID;
                 returnData.Message = "Import Completed Successfully.";
             }
             catch (Exception ex)
@@ -228,7 +231,7 @@ namespace API.Controllers
                 var httpRequest = HttpContext.Current.Request;
                 if (httpRequest.Files.Count > 0)
                 {
-                    string location = Path.Combine("ProjectAttachments");
+                    string location = Path.Combine("TempProjectAttachments");
                     string fileLocationPath = Path.Combine(HttpContext.Current.Server.MapPath("~"), location);
                     List<string> result = UploadFile(httpRequest, fileLocationPath, location);
                     List<string> resultToReturn = new List<string>();
@@ -305,6 +308,31 @@ namespace API.Controllers
             }
             return docfiles;
         }
+
+        private string MoveFileFromOneLocationToAnother(string tempFileLocation)
+        {
+            string destinationFullLocation = "";
+            string destinationLocation = "";
+
+            try
+            {
+                string fileTempFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), tempFileLocation);
+                destinationLocation = Path.Combine("ProjectAttachments", Path.GetFileName(fileTempFullLocation));
+
+                destinationFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), destinationLocation);
+                //string fileTempFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), tempFileLocation);
+
+                File.Move(fileTempFullLocation, destinationFullLocation);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return destinationLocation;
+        }
+
+
 
 
     }

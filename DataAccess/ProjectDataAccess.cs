@@ -31,6 +31,33 @@ namespace DataAccess
             return null;
         }
 
+        //public static int InsUpdImportDataFinish(string connectionString, Project project, List<ProjectColumnMapping> projectColumnMappings, List<Dailyprod_Staging> dailyprod_Stagings)
+        //{
+        //    SqlConnection conn = new SqlConnection(connectionString);
+        //    conn.Open();
+        //    SqlTransaction trans = conn.BeginTransaction();
+
+        //    int projectID = 0;
+
+        //    try
+        //    {
+        //        projectID = InsUpdProject(trans, project);
+        //        InsUpdProjectColumnMapping(trans, projectColumnMappings, projectID);
+        //        InsUpdDailyprod_Staging(trans, dailyprod_Stagings, projectID);
+
+        //        trans.Commit();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        trans.Rollback();
+        //        IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+        //        throw ex;
+        //    }
+
+        //    return projectID;
+        //}
+
+
         public static int InsUpdImportDataFinish(string connectionString, Project project, List<ProjectColumnMapping> projectColumnMappings, List<Dailyprod_Staging> dailyprod_Stagings)
         {
             SqlConnection conn = new SqlConnection(connectionString);
@@ -43,7 +70,7 @@ namespace DataAccess
             {
                 projectID = InsUpdProject(trans, project);
                 InsUpdProjectColumnMapping(trans, projectColumnMappings, projectID);
-                InsUpdDailyprod_Staging(trans, dailyprod_Stagings, projectID);
+                InsUpdDailyprod_Staging(trans, dailyprod_Stagings, projectID, conn);
 
                 trans.Commit();
             }
@@ -92,7 +119,6 @@ namespace DataAccess
             }
         }
 
-
         private static int InsUpdProjectColumnMapping(SqlTransaction trans, List<ProjectColumnMapping> projectColumnMappings, int ProjectID)
         {
 
@@ -124,45 +150,155 @@ namespace DataAccess
         }
 
 
-        private static int InsUpdDailyprod_Staging(SqlTransaction trans, List<Dailyprod_Staging> dailyprod_Stagings, int ProjectID)
-        {
+        //private static int InsUpdDailyprod_Staging(SqlTransaction trans, List<Dailyprod_Staging> dailyprod_Stagings, int ProjectID)
+        //{
 
-            int AutoID = 0;
+        //    int AutoID = 0;
+
+        //    try
+        //    {
+        //        foreach (var item in dailyprod_Stagings)
+        //        {
+        //            SqlParameter[] paramsArray = new SqlParameter[]{
+        //                                        new SqlParameter("@AutoID", item.AutoID),
+        //                                        new SqlParameter("@ProjectID", ProjectID),
+        //                                        new SqlParameter("@API", item.API),
+        //                                        new SqlParameter("@WELLNAME", item.WELLNAME),
+        //                                        new SqlParameter("@D_DATE", item.D_DATE),
+        //                                        new SqlParameter("@OIL", item.OIL),
+        //                                        new SqlParameter("@GAS", item.GAS),
+        //                                        new SqlParameter("@WATER", item.WATER),
+        //                                        new SqlParameter("@TubingPsi", item.TubingPsi),
+        //                                        new SqlParameter("@CasingPsi", item.CasingPsi),
+        //                                        new SqlParameter("@Choke", item.Choke),
+        //                                        new SqlParameter("@Downtime", item.Downtime),
+        //                                        new SqlParameter("@DowntimeReason", item.DowntimeReason),
+        //                                        new SqlParameter("@Row_Created_Date", item.Row_Created_Date),
+        //                                        new SqlParameter("@Row_Created_By", item.Row_Created_By)
+        //                                        };
+
+        //            AutoID = Convert.ToInt32(SQLHelper.SqlHelper.ExecuteScalar(trans, CommandType.StoredProcedure, "[dataloader].[InsUpdDailyprod_Staging]", paramsArray));
+        //        }
+
+        //        return AutoID;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+        //        throw ex;
+        //    }
+        //}
+
+        private static void InsUpdDailyprod_Staging(SqlTransaction trans, List<Dailyprod_Staging> dailyprod_Stagings, int ProjectID, SqlConnection sqlConnection)
+        {
+            SqlBulkCopy objbulk = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, trans);
+            objbulk.DestinationTableName = "dataloader.Dailyprod_Staging";
 
             try
             {
-                foreach (var item in dailyprod_Stagings)
-                {
-                    SqlParameter[] paramsArray = new SqlParameter[]{
-                                                new SqlParameter("@AutoID", item.AutoID),
-                                                new SqlParameter("@ProjectID", ProjectID),
-                                                new SqlParameter("@API", item.API),
-                                                new SqlParameter("@WELLNAME", item.WELLNAME),
-                                                new SqlParameter("@D_DATE", item.D_DATE),
-                                                new SqlParameter("@OIL", item.OIL),
-                                                new SqlParameter("@GAS", item.GAS),
-                                                new SqlParameter("@WATER", item.WATER),
-                                                new SqlParameter("@TubingPsi", item.TubingPsi),
-                                                new SqlParameter("@CasingPsi", item.CasingPsi),
-                                                new SqlParameter("@Choke", item.Choke),
-                                                new SqlParameter("@Downtime", item.Downtime),
-                                                new SqlParameter("@DowntimeReason", item.DowntimeReason),
-                                                new SqlParameter("@Row_Created_Date", item.Row_Created_Date),
-                                                new SqlParameter("@Row_Created_By", item.Row_Created_By)
-                                                };
+                dailyprod_Stagings.ForEach(x => x.ProjectID = ProjectID);
 
-                    AutoID = Convert.ToInt32(SQLHelper.SqlHelper.ExecuteScalar(trans, CommandType.StoredProcedure, "[dataloader].[InsUpdDailyprod_Staging]", paramsArray));
-                }
+                ListToTable listToTable = new ListToTable();
+                DataTable dtStagingData = ListToTable.LINQResultToDataTable(dailyprod_Stagings);
 
-                return AutoID;
+                objbulk.ColumnMappings.Add("AutoID", "AutoID");
+                objbulk.ColumnMappings.Add("ProjectID", "ProjectID");
+                objbulk.ColumnMappings.Add("API", "API");
+                objbulk.ColumnMappings.Add("WELLNAME", "WELLNAME");
+                objbulk.ColumnMappings.Add("D_DATE", "D_DATE");
+                objbulk.ColumnMappings.Add("OIL", "OIL");
+                objbulk.ColumnMappings.Add("GAS", "GAS");
+                objbulk.ColumnMappings.Add("WATER", "WATER");
+                objbulk.ColumnMappings.Add("TubingPsi", "TubingPsi");
+                objbulk.ColumnMappings.Add("CasingPsi", "CasingPsi");
+                objbulk.ColumnMappings.Add("Choke", "Choke");
+                objbulk.ColumnMappings.Add("Downtime", "Downtime");
+                objbulk.ColumnMappings.Add("DowntimeReason", "DowntimeReason");
+                objbulk.ColumnMappings.Add("Row_Created_Date", "Row_Created_Date");
+                objbulk.ColumnMappings.Add("Row_Created_By", "Row_Created_By");
+
+                //if (sqlConnection.State != ConnectionState.Open)
+                //{
+                //    sqlConnection.Open();
+                //}
+
+                objbulk.WriteToServer(dtStagingData);
             }
             catch (Exception ex)
             {
                 IRExceptionHandler.HandleException(ProjectType.DAL, ex);
                 throw ex;
             }
+            finally
+            {
+                //sqlConnection.Close();
+            }
         }
 
+
+        //public static int InsUpdImportDataFinishForAccessDBTest(string connection, Project project, List<ProjectColumnMapping> projectColumnMappings, List<Dailyprod_Staging> lstStagingData)
+        //{
+
+        //    SqlConnection conn = new SqlConnection(connection);
+        //    SqlBulkCopy objbulk = new SqlBulkCopy(conn);
+        //    objbulk.DestinationTableName = "dataloader.Dailyprod_Staging";
+
+        //    int ProjectID = 0;
+
+        //    try
+        //    {
+        //        SqlParameter[] paramsArray = new SqlParameter[]{
+        //                                        new SqlParameter("@ProjectID", project.ProjectID),
+        //                                        new SqlParameter("@Name", project.Name),
+        //                                        new SqlParameter("@Description", project.Description),
+        //                                        new SqlParameter("@ProjectGUID", project.ProjectGUID),
+        //                                        new SqlParameter("@DatasetTypeID", project.DatasetTypeID),
+        //                                        new SqlParameter("@FileTypeID", project.FileTypeID),
+        //                                        new SqlParameter("@StatusID", project.StatusID),
+        //                                        new SqlParameter("@FileLocation", project.FileLocation),
+        //                                        new SqlParameter("@Active", project.Active),
+        //                                        new SqlParameter("@CreatedBy", project.CreatedBy),
+        //                                        new SqlParameter("@CreatedOnDt", project.CreatedOnDt),
+        //                                        new SqlParameter("@TotalRecords", project.TotalRecords),
+        //                                        new SqlParameter("@UserID", project.UserID),
+        //                                        new SqlParameter("@DatasourceID", project.DatasourceID)
+        //                                        };
+        //        ProjectID = Convert.ToInt32(SQLHelper.SqlHelper.ExecuteScalar(connection, CommandType.StoredProcedure, "[dataloader].[InsUpdProject]", paramsArray));
+
+        //        lstStagingData.ForEach(x => x.ProjectID = ProjectID);
+
+        //        ListToTable listToTable = new ListToTable();
+        //        DataTable dtStagingData = ListToTable.LINQResultToDataTable(lstStagingData);
+
+        //        objbulk.ColumnMappings.Add("AutoID", "AutoID");
+        //        objbulk.ColumnMappings.Add("ProjectID", "ProjectID");
+        //        objbulk.ColumnMappings.Add("API", "API");
+        //        objbulk.ColumnMappings.Add("WELLNAME", "WELLNAME");
+        //        objbulk.ColumnMappings.Add("D_DATE", "D_DATE");
+        //        objbulk.ColumnMappings.Add("OIL", "OIL");
+        //        objbulk.ColumnMappings.Add("GAS", "GAS");
+        //        objbulk.ColumnMappings.Add("WATER", "WATER");
+        //        objbulk.ColumnMappings.Add("TubingPsi", "TubingPsi");
+        //        objbulk.ColumnMappings.Add("CasingPsi", "CasingPsi");
+        //        objbulk.ColumnMappings.Add("Choke", "Choke");
+        //        objbulk.ColumnMappings.Add("Downtime", "Downtime");
+        //        objbulk.ColumnMappings.Add("DowntimeReason", "DowntimeReason");
+        //        objbulk.ColumnMappings.Add("Row_Created_Date", "Row_Created_Date");
+        //        objbulk.ColumnMappings.Add("Row_Created_By", "Row_Created_By");
+
+        //        conn.Open();
+        //        //insert bulk Records into DataBase.  
+        //        objbulk.WriteToServer(dtStagingData);
+        //        conn.Close();
+
+        //        return ProjectID;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+        //        throw ex;
+        //    }
+        //}
 
     }
 }

@@ -45,6 +45,7 @@
     <Compile Include="IRExceptionHandler.cs" />
     <Compile Include="IRFileLogger.cs" />
     <Compile Include="LinqHelper.cs" />
+    <Compile Include="ListToTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
