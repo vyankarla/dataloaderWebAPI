@@ -18,6 +18,7 @@ using API.App_Start;
 using static Utilities.Enums;
 using System.Data.OleDb;
 using DataModel.BusinessObjects;
+using System.Web.Script.Serialization;
 
 namespace API.Controllers
 {
@@ -58,7 +59,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [ActionName("ImportDataFinishStepForExcelType")]
+        [ActionName("ImportDataFinishStep")]
         public IHttpActionResult InsUpdImportDataFinish([FromBody] ImportDataFinish importDataFinish, string loggedInUserName)
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
@@ -140,8 +141,31 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
+                List<Dailyprod_Staging> lstStagingData = ReadAccessDBData(importDataFinish.projectInput.FileLocation, loggedInUserName);
+
+                int projectID = ProjectService.ImportDataFinishStepForAccessDB(p.DBConnection, importDataFinish, loggedInUserName, lstStagingData);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                returnData.Data = projectID;
+                returnData.Message = "Import Completed Successfully.";
+            }
+            catch (Exception ex)
+            {
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Data = "";
+                returnData.Message = ex.Message;
+            }
+
+            return returnData;
+        }
+
+        private List<Dailyprod_Staging> ReadAccessDBData(string fileLocationPath, string loggedInUserName)
+        {
+            List<Dailyprod_Staging> lstStagingData = new List<Dailyprod_Staging>();
+            try
+            {
                 //string serverFilePath = "ProjectAttachments\\Project_Phantom.accdb";
-                string serverFilePath = importDataFinish.projectInput.FileLocation;
+                string serverFilePath = fileLocationPath;
                 string fileFullLocation = Path.Combine(HttpContext.Current.Server.MapPath("~"), serverFilePath);
 
                 string strDSN = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + fileFullLocation;
@@ -163,41 +187,33 @@ namespace API.Controllers
                 myConn.Close();
 
 
-                List<Dailyprod_Staging> lstStagingData = (from table1 in dTableAcDaily.AsEnumerable()
-                                                           join table2 in dTableAcProperty.AsEnumerable() on (string)table1["PROPNUM"] equals (string)table2["PROPNUM"]
-                                                           select new Dailyprod_Staging
-                                                           {
-                                                               AutoID = 0,
-                                                               ProjectID = 0,
-                                                               API = (table2["API_10"]).ToString(),
-                                                               WELLNAME = (table2["WELL_NAME"]).ToString(),
-                                                               D_DATE = (Convert.ToDateTime(table1["D_DATE"])).ToString("M/d/yyyy hh:mm:ss tt").Replace('-', '/'),
-                                                               OIL = (table1["OIL"]).ToString(),
-                                                               GAS = (table1["GAS"]).ToString(),
-                                                               WATER = (table1["WATER"]).ToString(),
-                                                               TubingPsi = (table1["TBG_PSI"]).ToString(),
-                                                               CasingPsi = (table1["CSG_PSI"]).ToString(),
-                                                               Downtime = "",
-                                                               DowntimeReason = "",
-                                                               Choke = (table1["CHOKE"]).ToString(),
-                                                               Row_Created_By = loggedInUserName,
-                                                               Row_Created_Date = DateTime.Now
-                                                           }).ToList();
-
-                int projectID = ProjectService.ImportDataFinishStepForAccessDB(p.DBConnection, importDataFinish, loggedInUserName, lstStagingData);
-
-                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
-                returnData.Data = projectID;
-                returnData.Message = "Import Completed Successfully.";
+                lstStagingData = (from table1 in dTableAcDaily.AsEnumerable()
+                                                          join table2 in dTableAcProperty.AsEnumerable() on (string)table1["PROPNUM"] equals (string)table2["PROPNUM"]
+                                                          select new Dailyprod_Staging
+                                                          {
+                                                              AutoID = 0,
+                                                              ProjectID = 0,
+                                                              API = (table2["API_10"]).ToString(),
+                                                              WELLNAME = (table2["WELL_NAME"]).ToString(),
+                                                              D_DATE = (Convert.ToDateTime(table1["D_DATE"])).ToString("M/d/yyyy hh:mm:ss tt").Replace('-', '/'),
+                                                              OIL = (table1["OIL"]).ToString(),
+                                                              GAS = (table1["GAS"]).ToString(),
+                                                              WATER = (table1["WATER"]).ToString(),
+                                                              TubingPsi = (table1["TBG_PSI"]).ToString(),
+                                                              CasingPsi = (table1["CSG_PSI"]).ToString(),
+                                                              Downtime = "",
+                                                              DowntimeReason = "",
+                                                              Choke = (table1["CHOKE"]).ToString(),
+                                                              Row_Created_By = loggedInUserName,
+                                                              Row_Created_Date = DateTime.Now
+                                                          }).ToList();
             }
             catch (Exception ex)
             {
-                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
-                returnData.Data = "";
-                returnData.Message = ex.Message;
+                throw ex;
             }
 
-            return returnData;
+            return lstStagingData;
         }
 
 
@@ -222,7 +238,7 @@ namespace API.Controllers
 
         [HttpPost]
         [ActionName("UploadExcelDataFileToUpload")]
-        public IHttpActionResult UploadExcelDataFileToUpload()
+        public IHttpActionResult UploadExcelDataFileToUpload(string loggedInUserName)
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
 
@@ -241,8 +257,26 @@ namespace API.Controllers
                         resultToReturn.Add(item);
                     }
 
+                    FileUploadReturnExtnl fileUploadReturnExtnl = new FileUploadReturnExtnl();
+                    fileUploadReturnExtnl.fileNames = resultToReturn;
+
+                    string[] stringVariables = resultToReturn[0].Split('.');
+                    string fileExtension = stringVariables[stringVariables.Length - 1];
+
+                    if (fileExtension == "accdb")
+                    {
+                        List<Dailyprod_Staging> lstStagingData = ReadAccessDBData(resultToReturn[0], loggedInUserName);
+                        var jsonSerialiser = new JavaScriptSerializer();
+                        fileUploadReturnExtnl.JSONData = jsonSerialiser.Serialize(lstStagingData.Take(100));
+                    }
+                    else
+                    {
+                        fileUploadReturnExtnl.JSONData = "";
+                    }
+
+
                     returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
-                    returnData.Data = resultToReturn;
+                    returnData.Data = fileUploadReturnExtnl;
                 }
                 else
                 {

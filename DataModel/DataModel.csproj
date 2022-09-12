@@ -50,6 +50,7 @@
     <Compile Include="ExternalModels\DatasetTypesExtnl.cs" />
     <Compile Include="ExternalModels\DatasourceTypesExtnl.cs" />
     <Compile Include="ExternalModels\FileTypesExtnl.cs" />
+    <Compile Include="ExternalModels\FileUploadReturnExtnl.cs" />
     <Compile Include="ExternalModels\LoginExtnl.cs" />
     <Compile Include="ExternalModels\ProjectExtnl.cs" />
     <Compile Include="InputModels\ImportDataFinish.cs" />
