@@ -15,6 +15,14 @@ namespace API.Common
             }
         }
 
+        public string DBConnectionStringForDataProcessing
+        {
+            get
+            {
+                return System.Configuration.ConfigurationManager.ConnectionStrings["DBConnectionStringForDataProcessing"].ToString();
+            }
+        }
+
         public string GetValueByKeyAppSettings(string key)
         {
             return System.Configuration.ConfigurationManager.AppSettings[key];

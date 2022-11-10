@@ -53,8 +53,10 @@
     <Compile Include="ExternalModels\FileUploadReturnExtnl.cs" />
     <Compile Include="ExternalModels\LoginExtnl.cs" />
     <Compile Include="ExternalModels\ProjectExtnl.cs" />
+    <Compile Include="ExternalModels\ProjectLogExtnl.cs" />
     <Compile Include="InputModels\ImportDataFinish.cs" />
     <Compile Include="InputModels\LoginInput.cs" />
+    <Compile Include="InputModels\MoveDataToLive.cs" />
     <Compile Include="InputModels\ProjectColumnMappingInput.cs" />
     <Compile Include="InputModels\ProjectInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -27,7 +27,7 @@ namespace Management
                 BusinessObjectParser.MapRowsToObject(dt, projectExtnl, "DataModel.ExternalModels.ProjectExtnl",
                      new string[] { "ProjectID", "Name", "Description", "ProjectGUID", "DatasetTypeID", "FileTypeID", "StatusID",
                      "FileLocation", "Active", "TotalRecords", "FileTypeDesc", "FileTypeName", "DatasetTypeName", "DatasetTypeDesc", "DateCreated",
-                     "initiatedBy", "StatusDesc", "StatusName" });
+                     "initiatedBy", "StatusDesc", "StatusName", "DatasourceID", "Datasource" });
 
                 return projectExtnl;
             }
@@ -95,7 +95,7 @@ namespace Management
             project.ProjectGUID = Guid.NewGuid();
             project.DatasetTypeID = projectInput.DatasetTypeID;
             project.FileTypeID = projectInput.FileTypeID;
-            project.StatusID = Convert.ToInt32(StatusEnum.Completed);
+            project.StatusID = Convert.ToInt32(StatusEnum.Initiated);
             project.FileLocation = projectInput.FileLocation;
             project.Active = projectInput.Active;
             project.UserID = projectInput.UserID;
@@ -319,6 +319,38 @@ namespace Management
         //    }
         //    return 0;
         //}
+
+        public static void ProcessDailyProdStaging(string connectionString, int ProjectID)
+        {
+            try
+            {
+                ProjectDataAccess.ProcessDailyProdStaging(connectionString, ProjectID);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+        }
+
+        public static List<ProjectLogExtnl> SelProjectStagingDataLogByProjectID(string connectionString, int ProjectID)
+        {
+            try
+            {
+                DataTable dt = ProjectDataAccess.SelProjectStagingDataLogByProjectID(connectionString, ProjectID);
+
+                List<ProjectLogExtnl> projectLogExtnls = new List<ProjectLogExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, projectLogExtnls, "DataModel.ExternalModels.ProjectLogExtnl",
+                     new string[] { "LogID", "ProjectID", "RowsInStaging", "WellsInStaging", "RowsProcessed", "WellsProcessed", "MissingWellsInTargetDB", "ProjectName" });
+
+                return projectLogExtnls;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
 
 
     }

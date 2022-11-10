@@ -43,5 +43,9 @@ namespace DataModel.ExternalModels
         public string StatusDesc { get; set; }
 
         public string StatusName { get; set; }
+
+        public int DatasourceID { get; set; }
+
+        public string Datasource { get; set; }
     }
 }

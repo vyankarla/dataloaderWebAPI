@@ -238,7 +238,7 @@ namespace API.Controllers
 
         [HttpPost]
         [ActionName("UploadExcelDataFileToUpload")]
-        public IHttpActionResult UploadExcelDataFileToUpload(string loggedInUserName)
+        public IHttpActionResult UploadExcelDataFileToUpload()
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
 
@@ -265,7 +265,7 @@ namespace API.Controllers
 
                     if (fileExtension == "accdb")
                     {
-                        List<Dailyprod_Staging> lstStagingData = ReadAccessDBData(resultToReturn[0], loggedInUserName);
+                        List<Dailyprod_Staging> lstStagingData = ReadAccessDBData(resultToReturn[0], "");
                         var jsonSerialiser = new JavaScriptSerializer();
                         fileUploadReturnExtnl.JSONData = jsonSerialiser.Serialize(lstStagingData.Take(100));
                     }
@@ -366,6 +366,51 @@ namespace API.Controllers
             return destinationLocation;
         }
 
+
+        [HttpPost]
+        [ActionName("ProcessDailyProdStaging")]
+        public IHttpActionResult ProcessDailyProdStaging([FromBody] MoveDataToLive moveDataToLive)
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+
+            try
+            {
+                ProjectService.ProcessDailyProdStaging(p.DBConnectionStringForDataProcessing, moveDataToLive.ProjectID);
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                returnData.Message = "Import has been completed.";
+            }
+            catch (Exception ex)
+            {
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Message = ex.Message;
+            }
+
+            return Ok(returnData);
+        }
+
+        [HttpGet]
+        [ActionName("ProcessStagingDataLog")]
+        public IHttpActionResult SelProjectStagingDataLogByProjectID(int ProjectID)
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+            try
+            {
+                List<ProjectLogExtnl> projectLogExtnls = ProjectService.SelProjectStagingDataLogByProjectID(p.DBConnection, ProjectID);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                returnData.Data = projectLogExtnls;
+            }
+            catch (Exception ex)
+            {
+                //IRExceptionHandler.HandleException(ProjectType.WebAPI, ex);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Data = "";
+                returnData.Message = ex.Message;
+            }
+
+            return Ok(returnData);
+        }
 
 
 

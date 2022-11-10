@@ -20,7 +20,7 @@ namespace Utilities
             CasingPsi = 10,
             Downtime = 11,
             DowntimeReason = 12,
-            Choke = 12
+            Choke = 13
         }
 
         public enum StatusEnum

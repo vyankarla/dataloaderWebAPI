@@ -300,5 +300,43 @@ namespace DataAccess
         //    }
         //}
 
+        public static void ProcessDailyProdStaging(string connectionString, int ProjectID)
+        {
+            try
+            {
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@ProjectID", ProjectID)
+                                                };
+
+                SQLHelper.SqlHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, "[dataloader].[uspProcessDailyProdStaging]", paramsArray);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+        }
+
+        public static DataTable SelProjectStagingDataLogByProjectID(string ConnectionString, int ProjectID)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@ProjectID", ProjectID)
+                                                };
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "[dataloader].[SelProjectStagingDataLogByProjectID]", paramsArray);
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
     }
 }
