@@ -32,7 +32,7 @@ namespace Utilities
             string filename = "";
             try
             {
-                filename = System.IO.Path.Combine(GetLogPath(), string.Format("TransPetra_{0}.Log", DateTime.Today.ToString("MMddyyyy")));
+                filename = System.IO.Path.Combine(GetLogPath(), string.Format("DataLoader_{0}.Log", DateTime.Today.ToString("MMddyyyy")));
                 entry += filenamePrefix;
                 entry += Environment.NewLine;
                 entry += "------------------------------------------------------------------------";

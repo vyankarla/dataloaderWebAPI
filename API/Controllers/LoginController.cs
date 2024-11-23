@@ -49,5 +49,44 @@ namespace API.Controllers
             }
         }
 
+
+        [HttpPost]
+        [ActionName("ChangePassword")]
+        public IHttpActionResult ChangePassword([FromBody] ChangePasswordInput changePasswordInput)
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+            try
+            {
+                List<LoginExtnl> login = UsersService.ValidateUserCredentials(p.DBConnection, changePasswordInput.Username, changePasswordInput.OldPassword);
+                if (login.Count > 0)
+                {
+                    int rows = UsersService.UpdChangePassword(p.DBConnection, changePasswordInput);
+
+                    if (rows > 0)
+                    {
+                        returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                        returnData.Message = "Password has been updated.";
+                    }
+                    else
+                    {
+                        returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                        returnData.Message = "An error occured while updating password.";
+                    }
+                }
+                else
+                {
+                    returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                    returnData.Message = "Please enter correct old password.";
+                }
+
+                return Ok(returnData);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.WebAPI, ex);
+                return BadRequest("An error occured while validating user.");
+            }
+        }
+
     }
 }

@@ -43,22 +43,40 @@
   <ItemGroup>
     <Compile Include="BusinessObjects\BusinessObjectParser.cs" />
     <Compile Include="BusinessObjects\Dailyprod_Staging.cs" />
+    <Compile Include="BusinessObjects\MonthlyProd_Staging.cs" />
     <Compile Include="BusinessObjects\Project.cs" />
     <Compile Include="BusinessObjects\ProjectColumnMapping.cs" />
+    <Compile Include="ExternalModels\ARIESMasterTablesExtnl.cs" />
     <Compile Include="ExternalModels\ControllerReturnObject.cs" />
     <Compile Include="ExternalModels\DatasetTypeColumnsExtnl.cs" />
     <Compile Include="ExternalModels\DatasetTypesExtnl.cs" />
     <Compile Include="ExternalModels\DatasourceTypesExtnl.cs" />
+    <Compile Include="ExternalModels\DevGroupingsExtnl.cs" />
     <Compile Include="ExternalModels\FileTypesExtnl.cs" />
     <Compile Include="ExternalModels\FileUploadReturnExtnl.cs" />
+    <Compile Include="ExternalModels\HeaderInfoExtnl.cs" />
     <Compile Include="ExternalModels\LoginExtnl.cs" />
     <Compile Include="ExternalModels\ProjectExtnl.cs" />
     <Compile Include="ExternalModels\ProjectLogExtnl.cs" />
+    <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_BatchsExtnl.cs" />
+    <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdsListExtnl.cs" />
+    <Compile Include="ExternalModels\TypeCurveAssignmentExtnl.cs" />
+    <Compile Include="ExternalModels\TypeCurvesExtnl.cs" />
+    <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdExtnl.cs" />
+    <Compile Include="InputModels\ARIES_Master_Tables_Drop_DetailsInput.cs" />
+    <Compile Include="InputModels\ARIES_Master_Tables_Edit_BatchInput.cs" />
+    <Compile Include="InputModels\ChangePasswordInput.cs" />
+    <Compile Include="InputModels\DevGroupingsInput.cs" />
     <Compile Include="InputModels\ImportDataFinish.cs" />
     <Compile Include="InputModels\LoginInput.cs" />
     <Compile Include="InputModels\MoveDataToLive.cs" />
     <Compile Include="InputModels\ProjectColumnMappingInput.cs" />
     <Compile Include="InputModels\ProjectInput.cs" />
+    <Compile Include="InputModels\ARIES_Master_Tables_Edit_DetailsInput.cs" />
+    <Compile Include="InputModels\Type_Curve_MilestonesInput.cs" />
+    <Compile Include="InputModels\UpdExportFlag.cs" />
+    <Compile Include="InputModels\UpdTypeCurveAssignmentInput.cs" />
+    <Compile Include="InputModels\UpdTypeCurveOverrideInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

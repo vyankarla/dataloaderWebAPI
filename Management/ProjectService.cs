@@ -46,9 +46,17 @@ namespace Management
 
                 Project project = ProjectObjectMapping(importDataFinish.projectInput, loggedInUserName);
                 List<ProjectColumnMapping> projectColumnMappings = ProjectColumnObjectMapping(importDataFinish.projectColumnMappingInputs, loggedInUserName);
-                List<Dailyprod_Staging> dailyprod_Stagings = ProjectColumnObjectDataMapping(excelData, loggedInUserName, importDataFinish.projectColumnMappingInputs, datasetTypeColumnsExtnls);
-
-                int projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, dailyprod_Stagings);
+                int projectID = 0;
+                if (project.DatasetTypeID == Convert.ToInt32(DatasetTypesEnum.DailyProd))
+                {
+                    List<Dailyprod_Staging> dailyprod_Stagings = ProjectColumnObjectDataMapping(excelData, loggedInUserName, importDataFinish.projectColumnMappingInputs, datasetTypeColumnsExtnls);
+                    projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, dailyprod_Stagings);
+                }
+                else if (project.DatasetTypeID == Convert.ToInt32(DatasetTypesEnum.Monthly))
+                {
+                    List<MonthlyProd_Staging> monthlyProd_Staging = ProjectColumnObjectDataMappingForMonthlyDaya(excelData, loggedInUserName, importDataFinish.projectColumnMappingInputs, datasetTypeColumnsExtnls);
+                    projectID = ProjectDataAccess.InsUpdImportDataFinishForMonthlyData(connectionString, project, projectColumnMappings, monthlyProd_Staging);
+                }
 
                 return projectID;
             }
@@ -75,7 +83,17 @@ namespace Management
 
                 Project project = ProjectObjectMapping(importDataFinish.projectInput, loggedInUserName);
                 List<ProjectColumnMapping> projectColumnMappings = new List<ProjectColumnMapping>();
-                int projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, prodStagingData);
+                //int projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, prodStagingData);
+
+                int projectID = 0;
+                if (project.DatasetTypeID == Convert.ToInt32(DatasetTypesEnum.DailyProd))
+                {
+                    projectID = ProjectDataAccess.InsUpdImportDataFinish(connectionString, project, projectColumnMappings, prodStagingData);
+                }
+                //else if (project.DatasetTypeID == Convert.ToInt32(DatasetTypesEnum.Monthly))
+                //{
+                //    projectID = ProjectDataAccess.InsUpdImportDataFinishForMonthlyData(connectionString, project, projectColumnMappings, prodStagingDataForMonthly);
+                //}
 
                 return projectID;
             }
@@ -262,6 +280,50 @@ namespace Management
             return dailyprod_Stagings;
         }
 
+        private static List<MonthlyProd_Staging> ProjectColumnObjectDataMappingForMonthlyDaya(DataTable excelData, string loggedInUserName, List<ProjectColumnMappingInput> projectColumnMappingInputs, List<DatasetTypeColumnsExtnl> datasetTypeColumnsExtnls)
+        {
+            List<MonthlyProd_Staging> monthlyProd_Stagings = new List<MonthlyProd_Staging>();
+
+            Boolean isAPIIsRequired = true;
+            Boolean isYearRequired = false;
+            Boolean isMonthRequired = false;
+            Boolean isOilRequired = false;
+            Boolean isGasRequired = false;
+            Boolean isWaterRequired = false;
+            Boolean isDaysOnRequired = false;
+
+            //GetSource Columns FROM Excel sheet
+            string APIExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.API_Monthly));
+            string YearExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.Year));
+            string MonthExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.Month));
+            string OilExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.Oil_Monthly));
+            string GasExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.Gas_Monthly));
+            string waterExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.Water_Monthly));
+            string DaysOnExcelColumnName = GetExcelSourceColumnName(projectColumnMappingInputs, Convert.ToInt32(DatasetTypeColumnsEnum.DaysOn));
+
+            foreach (DataRow item in excelData.Rows)
+            {
+                MonthlyProd_Staging monthlyProd_Staging = new MonthlyProd_Staging();
+
+                monthlyProd_Staging.AutoID = 0;
+
+                monthlyProd_Staging.API = CheckisColumnHasDataOrNot(isAPIIsRequired, item, APIExcelColumnName);
+                monthlyProd_Staging.YEAR = CheckisColumnHasDataOrNot(isYearRequired, item, YearExcelColumnName);
+                monthlyProd_Staging.MONTH = CheckisColumnHasDataOrNot(isMonthRequired, item, MonthExcelColumnName);
+                monthlyProd_Staging.OIL = CheckisColumnHasDataOrNot(isOilRequired, item, OilExcelColumnName);
+                monthlyProd_Staging.GAS = CheckisColumnHasDataOrNot(isGasRequired, item, GasExcelColumnName);
+                monthlyProd_Staging.WATER = CheckisColumnHasDataOrNot(isWaterRequired, item, waterExcelColumnName);
+                monthlyProd_Staging.DAYSON = CheckisColumnHasDataOrNot(isDaysOnRequired, item, DaysOnExcelColumnName);
+
+                monthlyProd_Staging.Row_Created_By = loggedInUserName;
+                monthlyProd_Staging.Row_Created_Date = DateTime.Now;
+
+                monthlyProd_Stagings.Add(monthlyProd_Staging);
+            }
+
+            return monthlyProd_Stagings;
+        }
+
         private static string GetExcelSourceColumnName(List<ProjectColumnMappingInput> projectColumnMappingInputs, int targetColumnID)
         {
             return projectColumnMappingInputs.
@@ -321,6 +383,18 @@ namespace Management
         //}
 
         public static void ProcessDailyProdStaging(string connectionString, int ProjectID)
+        {
+            try
+            {
+                ProjectDataAccess.ProcessDailyProdStaging(connectionString, ProjectID);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+        }
+
+        public static void ProcessMonthlyProdStaging(string connectionString, int ProjectID)
         {
             try
             {

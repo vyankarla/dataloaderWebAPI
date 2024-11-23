@@ -84,6 +84,32 @@ namespace DataAccess
             return projectID;
         }
 
+        public static int InsUpdImportDataFinishForMonthlyData(string connectionString, Project project, List<ProjectColumnMapping> projectColumnMappings, List<MonthlyProd_Staging> monthlyProd_Staging)
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+            SqlTransaction trans = conn.BeginTransaction();
+
+            int projectID = 0;
+
+            try
+            {
+                projectID = InsUpdProject(trans, project);
+                InsUpdProjectColumnMapping(trans, projectColumnMappings, projectID);
+                InsUpdMonthlyProd_Staging(trans, monthlyProd_Staging, projectID, conn);
+
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+
+            return projectID;
+        }
+
         private static int InsUpdProject(SqlTransaction trans, Project project)
         {
 
@@ -235,6 +261,48 @@ namespace DataAccess
             }
         }
 
+        private static void InsUpdMonthlyProd_Staging(SqlTransaction trans, List<MonthlyProd_Staging> monthlyProd_Stagings, int ProjectID, SqlConnection sqlConnection)
+        {
+            SqlBulkCopy objbulk = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, trans);
+            objbulk.DestinationTableName = "dataloader.MonthlyProd_Staging";
+
+            try
+            {
+                monthlyProd_Stagings.ForEach(x => x.ProjectID = ProjectID);
+
+                ListToTable listToTable = new ListToTable();
+                DataTable dtStagingData = ListToTable.LINQResultToDataTable(monthlyProd_Stagings);
+
+                objbulk.ColumnMappings.Add("AutoID", "AutoID");
+                objbulk.ColumnMappings.Add("ProjectID", "ProjectID");
+                objbulk.ColumnMappings.Add("API", "API");
+                objbulk.ColumnMappings.Add("YEAR", "YEAR");
+                objbulk.ColumnMappings.Add("MONTH", "MONTH");
+                objbulk.ColumnMappings.Add("OIL", "OIL");
+                objbulk.ColumnMappings.Add("GAS", "GAS");
+                objbulk.ColumnMappings.Add("WATER", "WATER");
+                objbulk.ColumnMappings.Add("DAYSON", "DAYSON");
+                objbulk.ColumnMappings.Add("Row_Created_Date", "Row_Created_Date");
+                objbulk.ColumnMappings.Add("Row_Created_By", "Row_Created_By");
+
+                //if (sqlConnection.State != ConnectionState.Open)
+                //{
+                //    sqlConnection.Open();
+                //}
+
+                objbulk.WriteToServer(dtStagingData);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+            finally
+            {
+                //sqlConnection.Close();
+            }
+        }
+
 
         //public static int InsUpdImportDataFinishForAccessDBTest(string connection, Project project, List<ProjectColumnMapping> projectColumnMappings, List<Dailyprod_Staging> lstStagingData)
         //{
@@ -309,6 +377,23 @@ namespace DataAccess
                                                 };
 
                 SQLHelper.SqlHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, "[dataloader].[uspProcessDailyProdStaging]", paramsArray);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+        }
+
+        public static void ProcessMonthlyProdStaging(string connectionString, int ProjectID)
+        {
+            try
+            {
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@ProjectID", ProjectID)
+                                                };
+
+                SQLHelper.SqlHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, "[dataloader].[uspProcessMonthlyProdStaging]", paramsArray);
             }
             catch (Exception ex)
             {

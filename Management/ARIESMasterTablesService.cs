@@ -1,0 +1,156 @@
+﻿using DataAccess;
+using DataModel.BusinessObjects;
+using DataModel.ExternalModels;
+using DataModel.InputModels;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Utilities;
+
+namespace Management
+{
+    public class ARIESMasterTablesService
+    {
+        public static List<ARIESMasterTablesExtnl> SelARIESMasterTables(string connectionString)
+        {
+            try
+            {
+                DataTable dt = ARIESMasterTablesAccess.SelARIESMasterTables(connectionString);
+
+                List<ARIESMasterTablesExtnl> aRIESMasterTables = new List<ARIESMasterTablesExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, aRIESMasterTables, "DataModel.ExternalModels.ARIESMasterTablesExtnl",
+                     new string[] { "PROPNUM", "LEASE_CURRENT", "LEASE_NEW", "TC_AREA_CURRENT", "TC_AREA_NEW", "RESERVOIR", "TYPECURVE_CURRENT",
+                         "TYPECURVE_NEW", "TYPECURVE_RISK_CURRENT", "TYPECURVE_RISK_NEW", "PLANNED_DLL_CURRENT", "PLANNED_DLL_NEW",
+                         "PLANNED_CLL_CURRENT", "PLANNED_CLL_NEW", "ONLINE_GROUPING_CURRENT", "ONLINE_GROUPING_NEW", "Well_ID", "SCHEDULED_CURRENT",
+                         "SCHEDULED_NEW", "TC_CODE_CURRENT", "TC_CODE_NEW" });
+
+                return aRIESMasterTables;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
+        public static int InsARIESMasterTablesEditBatchAndDetails(string connectionString, List<ARIES_Master_Tables_Edit_DetailsInput> updARIESMasterTablesInputs, string Batch_Type, Boolean ExportFlag)
+        {
+            int rows = 0;
+            try
+            {
+                if (updARIESMasterTablesInputs.Count > 0)
+                {
+                    DateTime CurrentUtcDateTime = DateTime.UtcNow;
+
+                    ARIES_Master_Tables_Edit_BatchInput aries_Master_Tables_Edit_BatchInput = new ARIES_Master_Tables_Edit_BatchInput();
+                    aries_Master_Tables_Edit_BatchInput.Batch_id = 0;
+                    aries_Master_Tables_Edit_BatchInput.Batch_Timestamp = CurrentUtcDateTime;
+                    aries_Master_Tables_Edit_BatchInput.Row_Created_By = updARIESMasterTablesInputs[0].Row_Created_By;
+                    aries_Master_Tables_Edit_BatchInput.Row_Created_Date = CurrentUtcDateTime;
+
+                    rows = ARIESMasterTablesAccess.InsARIESMasterTablesEditBatchAndDetails(connectionString, aries_Master_Tables_Edit_BatchInput, CurrentUtcDateTime, updARIESMasterTablesInputs, Batch_Type, ExportFlag);
+                }
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+        public static int InsARIESMasterTablesDropBatchAndDetails(string connectionString, List<ARIES_Master_Tables_Drop_DetailsInput> updARIESMasterTablesInputs, string Batch_Type, Boolean ExportFlag)
+        {
+            int rows = 0;
+            try
+            {
+                if (updARIESMasterTablesInputs.Count > 0)
+                {
+                    DateTime CurrentUtcDateTime = DateTime.UtcNow;
+
+                    ARIES_Master_Tables_Edit_BatchInput aries_Master_Tables_Edit_BatchInput = new ARIES_Master_Tables_Edit_BatchInput();
+                    aries_Master_Tables_Edit_BatchInput.Batch_id = 0;
+                    aries_Master_Tables_Edit_BatchInput.Batch_Timestamp = CurrentUtcDateTime;
+                    aries_Master_Tables_Edit_BatchInput.Row_Created_By = updARIESMasterTablesInputs[0].Row_Created_By;
+                    aries_Master_Tables_Edit_BatchInput.Row_Created_Date = CurrentUtcDateTime;
+
+                    rows = ARIESMasterTablesAccess.InsARIESMasterTablesDropBatchAndDetails(connectionString, aries_Master_Tables_Edit_BatchInput, CurrentUtcDateTime, updARIESMasterTablesInputs, Batch_Type, ExportFlag);
+                }
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+
+        public static List<SelARIES_Master_Tables_Edit_BatchsExtnl> SelARIES_Master_Tables_Batchs(string connectionString, string Batch_Type)
+        {
+            try
+            {
+                DataTable dt = ARIESMasterTablesAccess.SelARIES_Master_Tables_Batchs(connectionString, Batch_Type);
+
+
+                List<SelARIES_Master_Tables_Edit_BatchsExtnl> returnData = new List<SelARIES_Master_Tables_Edit_BatchsExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.SelARIES_Master_Tables_Edit_BatchsExtnl",
+                    new string[] { "Batch_id", "Batch_Timestamp", "Row_Created_By", "Row_Created_Date", "Batch_Type", "ExportFlag" });
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
+        public static List<SelARIES_Master_Tables_Edit_DetailsByBatchId> SelARIES_Master_Tables_Edit_DetailsByBatchId(string connectionString, int Batch_id)
+        {
+            try
+            {
+                DataTable dt = ARIESMasterTablesAccess.SelARIES_Master_Tables_Edit_DetailsByBatchId(connectionString, Batch_id);
+
+
+                List<SelARIES_Master_Tables_Edit_DetailsByBatchId> returnData = new List<SelARIES_Master_Tables_Edit_DetailsByBatchId>();
+
+                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.SelARIES_Master_Tables_Edit_DetailsByBatchId",
+                    new string[] { "Well_ID", "PROPNUM", "LEASE_CURRENT", "LEASE_NEW", "SCHEDULED_CURRENT", "SCHEDULED_NEW",
+                        "ONLINE_GROUPING_CURRENT", "ONLINE_GROUPING_NEW", "TC_AREA_CURRENT", "TC_AREA_NEW", "TYPECURVE_CURRENT",
+                        "TYPECURVE_NEW", "TC_CODE_CURRENT", "TC_CODE_NEW", "TYPECURVE_RISK_CURRENT", "TYPECURVE_RISK_NEW", "PLANNED_DLL_CURRENT",
+                        "PLANNED_DLL_NEW", "PLANNED_CLL_CURRENT", "PLANNED_CLL_NEW", "Batch_id", "Row_Created_By", "Row_Created_Date",
+                        "Row_Changed_By", "Row_Changed_Date", "DropComments", "Batch_Type" });
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
+        public static int UpdExportFlagByBatch_id(string connectionString, UpdExportFlag updExportFlag, Boolean ExportFlag)
+        {
+            int rows = 0;
+            try
+            {
+                rows = ARIESMasterTablesAccess.UpdExportFlagByBatch_id(connectionString, updExportFlag, ExportFlag);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+
+
+    }
+}
+

@@ -41,11 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ARIESMasterTablesAccess.cs" />
     <Compile Include="DatasetTypeColumnsDataAccess.cs" />
+    <Compile Include="DevGroupingsDataAccess.cs" />
     <Compile Include="LookupDataAccess.cs" />
     <Compile Include="ProjectDataAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLHelper.cs" />
+    <Compile Include="TypeCurveAssignmentDataAccess.cs" />
+    <Compile Include="TypeCurveOverrideDataAccess.cs" />
     <Compile Include="UsersDataAccess.cs" />
   </ItemGroup>
   <ItemGroup>

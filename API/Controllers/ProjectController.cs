@@ -63,17 +63,26 @@ namespace API.Controllers
         public IHttpActionResult InsUpdImportDataFinish([FromBody] ImportDataFinish importDataFinish, string loggedInUserName)
         {
             ControllerReturnObject returnData = new ControllerReturnObject();
-
-            importDataFinish.projectInput.FileLocation = MoveFileFromOneLocationToAnother(importDataFinish.projectInput.FileLocation);
-
-            if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.Excel) ||
-                importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.CSV))
+            try
             {
-                returnData = ProcessExcelFile(importDataFinish, loggedInUserName);
+                importDataFinish.projectInput.FileLocation = MoveFileFromOneLocationToAnother(importDataFinish.projectInput.FileLocation);
+
+                if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.Excel) ||
+                    importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.CSV))
+                {
+                    importDataFinish.projectColumnMappingInputs = importDataFinish.projectColumnMappingInputs.Where(x => x.TargetColumnID != null).ToList();
+                    returnData = ProcessExcelFile(importDataFinish, loggedInUserName);
+                }
+                else if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.AccessDB))
+                {
+                    returnData = ProcessAccessDB(importDataFinish, loggedInUserName);
+                }
             }
-            else if (importDataFinish.projectInput.FileTypeID == Convert.ToInt32(FileTypesEnum.AccessDB))
+            catch (Exception ex)
             {
-                returnData = ProcessAccessDB(importDataFinish, loggedInUserName);
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Data = "";
+                returnData.Message = ex.Message;
             }
 
             return Ok(returnData);
@@ -375,7 +384,14 @@ namespace API.Controllers
 
             try
             {
-                ProjectService.ProcessDailyProdStaging(p.DBConnectionStringForDataProcessing, moveDataToLive.ProjectID);
+                if (moveDataToLive.DatasetTypeID == Convert.ToInt32(DatasetTypesEnum.DailyProd))
+                {
+                    ProjectService.ProcessDailyProdStaging(p.DBConnectionStringForDataProcessing, moveDataToLive.ProjectID);
+                }
+                else if (moveDataToLive.DatasetTypeID == Convert.ToInt32(DatasetTypesEnum.Monthly))
+                {
+                    ProjectService.ProcessMonthlyProdStaging(p.DBConnectionStringForDataProcessing, moveDataToLive.ProjectID);
+                }
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 returnData.Message = "Import has been completed.";
             }

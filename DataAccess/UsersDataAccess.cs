@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataModel.InputModels;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -32,6 +33,30 @@ namespace DataAccess
             }
             return null;
         }
+
+        public static int UpdChangePassword(string connectionString, ChangePasswordInput changePasswordInput)
+        {
+
+            int rows = 0;
+
+            try
+            {
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@Username", changePasswordInput.Username),
+                                                new SqlParameter("@NewPassword", changePasswordInput.NewPassword)
+                                                };
+
+                rows = SQLHelper.SqlHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, "[dataloader].[UpdChangePassword]", paramsArray);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+
+            return rows;
+        }
+
 
     }
 }

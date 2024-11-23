@@ -20,7 +20,15 @@ namespace Utilities
             CasingPsi = 10,
             Downtime = 11,
             DowntimeReason = 12,
-            Choke = 13
+            Choke = 13,
+
+            Year = 14,
+            Month = 15,
+            Oil_Monthly = 19,
+            Gas_Monthly = 20,
+            Water_Monthly = 21,
+            DaysOn = 22,
+            API_Monthly = 23
         }
 
         public enum StatusEnum
@@ -35,6 +43,12 @@ namespace Utilities
             Excel = 1,
             CSV = 2,
             AccessDB = 3
+        }
+
+        public enum DatasetTypesEnum
+        {
+            DailyProd = 1,
+            Monthly = 2
         }
 
     }

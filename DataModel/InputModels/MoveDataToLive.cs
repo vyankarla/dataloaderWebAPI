@@ -10,6 +10,8 @@ namespace DataModel.InputModels
     {
         public int ProjectID { get; set; }
 
+        public int DatasetTypeID { get; set; }
+
         public int loggedInUserID { get; set; }
     }
 }

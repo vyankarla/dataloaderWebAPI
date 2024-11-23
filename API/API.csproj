@@ -110,7 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BasicAuthentication.cs" />
@@ -118,10 +120,14 @@
     <Compile Include="App_Start\SwaggerSecurityRequirementsDocumentFilter.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\Base.cs" />
+    <Compile Include="Controllers\ARIESMasterTablesController.cs" />
     <Compile Include="Controllers\DatasetTypeColumnsController.cs" />
+    <Compile Include="Controllers\DevGroupingsController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\TypeCurveAssignmentController.cs" />
+    <Compile Include="Controllers\TypeCurveOverrideController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -130,7 +136,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\colgdataloaderapi - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\colgdataloaderapi - FTP1.pubxml" />
     <None Include="Properties\PublishProfiles\colgdataloaderapi - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\colgdataloaderapi - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

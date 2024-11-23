@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DataModel.BusinessObjects;
 using DataModel.ExternalModels;
+using DataModel.InputModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,6 +32,21 @@ namespace Management
                 IRExceptionHandler.HandleException(ProjectType.BLL, ex);
             }
             return null;
+        }
+
+        public static int UpdChangePassword(string connectionString, ChangePasswordInput changePasswordInput)
+        {
+            int rows = 0;
+            try
+            {
+                rows = UsersDataAccess.UpdChangePassword(connectionString, changePasswordInput);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
         }
 
 
