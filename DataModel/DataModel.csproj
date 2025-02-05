@@ -55,6 +55,7 @@
     <Compile Include="ExternalModels\FileTypesExtnl.cs" />
     <Compile Include="ExternalModels\FileUploadReturnExtnl.cs" />
     <Compile Include="ExternalModels\HeaderInfoExtnl.cs" />
+    <Compile Include="ExternalModels\HeaderInfoForEditStickSheetExtnl.cs" />
     <Compile Include="ExternalModels\LoginExtnl.cs" />
     <Compile Include="ExternalModels\ProjectExtnl.cs" />
     <Compile Include="ExternalModels\ProjectLogExtnl.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="InputModels\ARIES_Master_Tables_Edit_BatchInput.cs" />
     <Compile Include="InputModels\ChangePasswordInput.cs" />
     <Compile Include="InputModels\DevGroupingsInput.cs" />
+    <Compile Include="InputModels\HeaderInfoForEditStickSheetInput.cs" />
     <Compile Include="InputModels\ImportDataFinish.cs" />
     <Compile Include="InputModels\LoginInput.cs" />
     <Compile Include="InputModels\MoveDataToLive.cs" />
@@ -77,6 +79,8 @@
     <Compile Include="InputModels\UpdExportFlag.cs" />
     <Compile Include="InputModels\UpdTypeCurveAssignmentInput.cs" />
     <Compile Include="InputModels\UpdTypeCurveOverrideInput.cs" />
+    <Compile Include="InputModels\UpdTypeCurveOverrideNewInput.cs" />
+    <Compile Include="InputModels\UsersInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

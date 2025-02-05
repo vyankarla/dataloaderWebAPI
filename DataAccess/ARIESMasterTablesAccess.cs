@@ -213,6 +213,61 @@ namespace DataAccess
             return rows;
         }
 
+        public static DataTable SelARIESDataForEditBatchNew(string connectionString)
+        {
+            try
+            {
+                DataSet ds = null;
+                ds = SQLHelper.SqlHelper.ExecuteDataset(connectionString, CommandType.StoredProcedure, "[well].[SelARIESDataForEditBatchNew]");
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
+        public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs, DateTime CurrentUtcDateTime)
+        {
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+            SqlTransaction trans = conn.BeginTransaction();
+            int rows = 0;
+
+            try
+            {
+                foreach (HeaderInfoForEditStickSheetInput item in updARIESMasterTablesInputs)
+                {
+                    SqlParameter[] paramsArrayRow = new SqlParameter[]{
+                                                new SqlParameter("@Well_ID", item.Well_ID),
+                                                new SqlParameter("@Well_Report_Name", item.Well_Report_Name),
+                                                new SqlParameter("@Drilling_Spacing_Unit", item.Drilling_Spacing_Unit),
+                                                new SqlParameter("@Development_Group", item.Development_Group),
+                                                new SqlParameter("@Type_Curve_Risk", item.Type_Curve_Risk),
+                                                new SqlParameter("@Planned_Drilled_Lateral_Length", item.Planned_Drilled_Lateral_Length),
+                                                new SqlParameter("@Planned_Completed_Lateral_Length", item.Planned_Completed_Lateral_Length),
+                                                new SqlParameter("@LoggedInUserName", item.LoggedInUserName)
+                                                };
+
+                    rows = rows + SQLHelper.SqlHelper.ExecuteNonQuery(trans, CommandType.StoredProcedure, "[well].[UpdHeader]", paramsArrayRow);
+
+                }
+
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+
+            return rows;
+        }
+
 
 
     }

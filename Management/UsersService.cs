@@ -34,6 +34,26 @@ namespace Management
             return null;
         }
 
+        public static List<UsersExtnl> SelUsersList(string connectionString)
+        {
+            try
+            {
+                DataTable dt = UsersDataAccess.SelUsersList(connectionString);
+
+                List<UsersExtnl> users = new List<UsersExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, users, "DataModel.ExternalModels.UsersExtnl",
+                     new string[] { "UserID", "Firstname", "Lastname", "Username", "isAdmin", "Password" });
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
         public static int UpdChangePassword(string connectionString, ChangePasswordInput changePasswordInput)
         {
             int rows = 0;
@@ -47,6 +67,21 @@ namespace Management
                 throw ex;
             }
             return rows;
+        }
+
+        public static int InsUpdUsers(string connectionString, UsersInput usersInput)
+        {
+            int UserID = 0;
+            try
+            {
+                UserID = UsersDataAccess.InsUpdUsers(connectionString, usersInput, DateTime.UtcNow, false);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return UserID;
         }
 
 

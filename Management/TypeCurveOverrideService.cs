@@ -31,7 +31,8 @@ namespace Management
                      "Elev_Datum", "Elevation", "Depth_Max_Md", "Depth_Avg_Tvd", "Depth_Max_Tvd", "Pad_Name", "Pad_Pop_Order", "Facility_Name",
                      "Well_Data_Category", "Lease_Well_Count", "Reserves_Project_Id", "Reservoir_Engineer", "Area_Team", "Comments",
                      "Row_Created_By", "Row_Created_Date", "Row_Changed_By", "Row_Changed_Date", "Row_Archived_By", "Row_Archived_Date", "Active_Ind",
-                     "Type_Curve_Milestone", "Type_Curve_Name" });
+                     "Type_Curve_Milestone", "Type_Curve_Name", "Inventory_Milestone", "Package_review_Milestone", "Final_Tech_Review",
+                     "Pre_frac_Milestone", "Type_Curve_Assignment", "DSU_Prod_Zone_Assignment" });
 
                 return headerInfoExtnls;
             }
@@ -60,6 +61,22 @@ namespace Management
                 type_Curve_MilestonesInput.Active_Ind = "Y";
 
                 rows = TypeCurveOverrideDataAccess.UpdTypeCurveOverrideByWellID(connectionString, updTypeCurveOverrideInput, type_Curve_MilestonesInput);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+        public static int UpdTypeCurveOverrideByWellIDList(string connectionString, UpdTypeCurveOverrideInput updTypeCurveOverrideInput,
+            List<Type_Curve_MilestonesInput> type_Curve_MilestonesInputs)
+        {
+            int rows = 0;
+            try
+            {
+                rows = TypeCurveOverrideDataAccess.UpdTypeCurveOverrideByWellIDList(connectionString, updTypeCurveOverrideInput, type_Curve_MilestonesInputs);
             }
             catch (Exception ex)
             {

@@ -116,5 +116,17 @@ namespace DataModel.ExternalModels
         public string Type_Curve_Milestone { get; set; }
 
         public string Type_Curve_Name { get; set; }
+
+        public string Inventory_Milestone { get; set; }
+
+        public string Package_review_Milestone { get; set; }
+
+        public string Final_Tech_Review { get; set; }
+
+        public string Pre_frac_Milestone { get; set; }
+
+        public string Type_Curve_Assignment { get; set; }
+
+        public string DSU_Prod_Zone_Assignment { get; set; }
     }
 }

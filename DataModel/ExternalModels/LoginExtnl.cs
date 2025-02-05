@@ -19,4 +19,20 @@ namespace DataModel.ExternalModels
         public Boolean isAdmin { get; set; }
 
     }
+
+    public class UsersExtnl
+    {
+        public int UserID { get; set; }
+
+        public string Firstname { get; set; }
+
+        public string Lastname { get; set; }
+
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
+        public Boolean isAdmin { get; set; }
+
+    }
 }

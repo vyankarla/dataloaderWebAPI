@@ -58,5 +58,50 @@ namespace DataAccess
         }
 
 
+        public static DataTable SelUsersList(string ConnectionString)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "[dataloader].[SelUsersList]");
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
+
+        public static int InsUpdUsers(string connectionString, UsersInput usersInput, DateTime currentDateTime, Boolean isAdmin)
+        {
+            int UserID = 0;
+            try
+            {
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@UserID", usersInput.UserID),
+                                                new SqlParameter("@Firstname", usersInput.Firstname),
+                                                new SqlParameter("@Lastname", usersInput.Lastname),
+                                                new SqlParameter("@Username", usersInput.Username),
+                                                new SqlParameter("@Password", usersInput.Password),
+                                                new SqlParameter("@isAdmin", isAdmin),
+                                                new SqlParameter("@CreatedOnDt", currentDateTime),
+                                                new SqlParameter("@CreatedBy", usersInput.LoggedInUserID)
+                                                };
+
+                UserID = Convert.ToInt32(SQLHelper.SqlHelper.ExecuteScalar(connectionString, CommandType.StoredProcedure, "[dataloader].[InsUpdUsers]", paramsArray));
+
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return UserID;
+        }
+
+
     }
 }

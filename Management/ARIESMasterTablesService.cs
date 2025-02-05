@@ -149,6 +149,43 @@ namespace Management
             return rows;
         }
 
+        public static List<HeaderInfoForEditStickSheetExtnl> SelARIESDataForEditBatchNew(string connectionString)
+        {
+            try
+            {
+                DataTable dt = ARIESMasterTablesAccess.SelARIESDataForEditBatchNew(connectionString);
+
+
+                List<HeaderInfoForEditStickSheetExtnl> returnData = new List<HeaderInfoForEditStickSheetExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.HeaderInfoForEditStickSheetExtnl",
+                    new string[] { "Well_ID", "PROPNUM", "Well_Report_Name", "Drilling_Spacing_Unit", "Development_Group", "Type_Curve_Risk",
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length" });
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
+        public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs)
+        {
+            int rows = 0;
+            try
+            {
+                rows = ARIESMasterTablesAccess.UpdHeaderForEditBatchNew(connectionString, updARIESMasterTablesInputs, DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+
 
 
     }

@@ -57,6 +57,36 @@ namespace DataAccess
             return rows;
         }
 
+        public static int UpdTypeCurveOverrideByWellIDList(string connectionString, UpdTypeCurveOverrideInput updTypeCurveOverrideInput,
+            List<Type_Curve_MilestonesInput> type_Curve_MilestonesInputs)
+        {
+
+            int rows = 0;
+
+            try
+            {
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@WellID", updTypeCurveOverrideInput.WellID),
+                                                new SqlParameter("@Type_Curve_Override", updTypeCurveOverrideInput.Type_Curve_Override),
+                                                new SqlParameter("@Row_Changed_By", updTypeCurveOverrideInput.Row_Changed_By)
+                                                };
+                foreach (var type_Curve_MilestonesInput in type_Curve_MilestonesInputs)
+                {
+                    InsUpdType_Curve_Milestones(connectionString, type_Curve_MilestonesInput);
+                }
+
+
+                rows = SQLHelper.SqlHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, "[Well].[UpdTypeCurveOverrideByWellID]", paramsArray);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+
+            return rows;
+        }
+
         private static int InsUpdType_Curve_Milestones(string connectionString, Type_Curve_MilestonesInput type_Curve_MilestonesInput)
         {
 
