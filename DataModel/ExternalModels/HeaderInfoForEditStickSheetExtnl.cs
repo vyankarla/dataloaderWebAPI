@@ -23,5 +23,9 @@ namespace DataModel.ExternalModels
         public Single Planned_Drilled_Lateral_Length { get; set; }
 
         public Single Planned_Completed_Lateral_Length { get; set; }
+
+        public string Producing_Zone { get; set; }
+
+        public string Well_Type { get; set; }
     }
 }

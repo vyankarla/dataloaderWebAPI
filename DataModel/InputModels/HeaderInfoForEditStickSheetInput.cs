@@ -24,8 +24,16 @@ namespace DataModel.InputModels
 
         public decimal Planned_Completed_Lateral_Length { get; set; }
 
+        public decimal PerfLateralLength { get; set; }
+
         public string LoggedInUserName { get; set; }
 
+        public decimal? CustomNumber3 { get; set; }
+
+        public decimal? CustomNumber4 { get; set; }
+
         public int LoggedInUserID { get; set; }
+
+        public string Well_Type { get; set; }
     }
 }

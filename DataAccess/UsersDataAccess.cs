@@ -89,7 +89,9 @@ namespace DataAccess
                                                 new SqlParameter("@Password", usersInput.Password),
                                                 new SqlParameter("@isAdmin", isAdmin),
                                                 new SqlParameter("@CreatedOnDt", currentDateTime),
-                                                new SqlParameter("@CreatedBy", usersInput.LoggedInUserID)
+                                                new SqlParameter("@CreatedBy", usersInput.LoggedInUserID),
+                                                new SqlParameter("@Role", usersInput.Role),
+                                                new SqlParameter("@isActive", usersInput.isActive)
                                                 };
 
                 UserID = Convert.ToInt32(SQLHelper.SqlHelper.ExecuteScalar(connectionString, CommandType.StoredProcedure, "[dataloader].[InsUpdUsers]", paramsArray));

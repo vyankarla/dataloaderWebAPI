@@ -49,5 +49,7 @@ namespace DataModel.ExternalModels
         public string PLANNED_CLL_NEW { get; set; }
 
         public string RESERVOIR { get; set; }
+
+        public string Producing_Zone { get; set; }
     }
 }

@@ -229,6 +229,23 @@ namespace DataAccess
             return null;
         }
 
+        public static DataTable SelARIESDataForEditBatchNewForApproval(string connectionString)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(connectionString, CommandType.StoredProcedure, "[well].[SelARIESDataForEditBatchNewForApproval]");
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
         public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs, DateTime CurrentUtcDateTime)
         {
 
@@ -249,7 +266,8 @@ namespace DataAccess
                                                 new SqlParameter("@Type_Curve_Risk", item.Type_Curve_Risk),
                                                 new SqlParameter("@Planned_Drilled_Lateral_Length", item.Planned_Drilled_Lateral_Length),
                                                 new SqlParameter("@Planned_Completed_Lateral_Length", item.Planned_Completed_Lateral_Length),
-                                                new SqlParameter("@LoggedInUserName", item.LoggedInUserName)
+                                                new SqlParameter("@LoggedInUserName", item.LoggedInUserName),
+                                                new SqlParameter("@Well_Type", item.Well_Type)
                                                 };
 
                     rows = rows + SQLHelper.SqlHelper.ExecuteNonQuery(trans, CommandType.StoredProcedure, "[well].[UpdHeader]", paramsArrayRow);
@@ -266,6 +284,61 @@ namespace DataAccess
             }
 
             return rows;
+        }
+
+        public static int UpdDataSourceToIMByWellID(string connectionString, List<UpdDataSourceByWellIDInput> updDataSourceByWellIDInputs, DateTime CurrentUtcDateTime)
+        {
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+            SqlTransaction trans = conn.BeginTransaction();
+            int rows = 0;
+
+            try
+            {
+                foreach (UpdDataSourceByWellIDInput item in updDataSourceByWellIDInputs)
+                {
+                    SqlParameter[] paramsArrayRow = new SqlParameter[]{
+                                                new SqlParameter("@Well_ID", item.Well_ID),
+                                                new SqlParameter("@CurrentUtcDateTime", CurrentUtcDateTime),
+                                                new SqlParameter("@LoggedInUserID", item.LoggedInUserID),
+                                                new SqlParameter("@LoggedInUserName", item.LoggedInUserName)
+                                                };
+
+                    rows = rows + SQLHelper.SqlHelper.ExecuteNonQuery(trans, CommandType.StoredProcedure, "[well].[UpdDataSourceToIMByWellID]", paramsArrayRow);
+
+                }
+
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+
+            return rows;
+        }
+
+        public static DataTable SelWellDataForCCByWellID(string connectionString, int Well_ID)
+        {
+            try
+            {
+                DataSet ds = null;
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@Well_ID", Well_ID)
+                                                };
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(connectionString, CommandType.StoredProcedure, "[well].[SelWellDataForCCByWellID]", paramsArray);
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
         }
 
 

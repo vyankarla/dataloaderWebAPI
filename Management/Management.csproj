@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ARIESMasterTablesService.cs" />
+    <Compile Include="CommonServiceMethods.cs" />
     <Compile Include="DatasetTypeColumnsService.cs" />
     <Compile Include="DevGroupingsService.cs" />
     <Compile Include="LookupService.cs" />

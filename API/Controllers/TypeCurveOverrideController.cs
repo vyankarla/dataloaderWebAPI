@@ -15,7 +15,7 @@ using static API.Common.Base;
 namespace API.Controllers
 {
     [Route("api/TypeCurveOverride/{action}")]
-    [BasicAuthentication]
+    //[BasicAuthentication]
     public class TypeCurveOverrideController : ApiController
     {
         Base p = new Base();
@@ -140,31 +140,88 @@ namespace API.Controllers
 
                     rows = rows + TypeCurveOverrideService.UpdTypeCurveOverrideByWellIDList(p.DBConnectionStringForDataProcessing,
                         updTypeCurveOverrideInputMain, type_Curve_MilestonesInputs);
+
+
+
+                    List<SelTypeCurveAssignmentByWellIDExtnl> selTypeCurveAssignmentByWellIDExtnls = TypeCurveOverrideService.SelTypeCurveAssignmentByWellID(p.DBConnectionStringForDataProcessing, item.Well_ID);
+                    if (selTypeCurveAssignmentByWellIDExtnls != null && selTypeCurveAssignmentByWellIDExtnls.Count > 0)
+                    {
+                        string mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~");
+                        ComboCurveAPI comboAPI = new ComboCurveAPI();
+
+                        List<UpdTypeCurveOverrideNewInput> updTypeCurveOverrideNewInputsUpdated = new List<UpdTypeCurveOverrideNewInput>();
+                        UpdTypeCurveOverrideNewInput updTypeCurveOverrideNewInputUpdated = new UpdTypeCurveOverrideNewInput();
+                        updTypeCurveOverrideNewInputUpdated.Well_ID = item.Well_ID;
+                        updTypeCurveOverrideNewInputUpdated.Type_Curve_Override = selTypeCurveAssignmentByWellIDExtnls[0].Type_Curve_Assignment;
+                        updTypeCurveOverrideNewInputsUpdated.Add(updTypeCurveOverrideNewInputUpdated);
+
+                        comboAPI.UpdateComboCurveForTypeCurveOverrideByWellIDList(updTypeCurveOverrideNewInputsUpdated, "internal",
+                            mapPath,
+                            p.GetValueByKeyAppSettings("ComboCurveJSONFileName"),
+                            p.GetValueByKeyAppSettings("ComboCurveAPIKey"));
+
+                        objControllerReturnObject.Data = rows;
+                        objControllerReturnObject.Message = "Type Curve Override has Updated.";
+                        objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Success);
+                    }
                 }
                 
                 
                 //int rows = TypeCurveOverrideService.UpdTypeCurveOverrideByWellID(p.DBConnectionStringForDataProcessing, updTypeCurveOverrideInput);
 
-                if (rows > 0)
-                {
+                //if (rows > 0)
+                //{
 
-                    string mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~");
-                    ComboCurveAPI comboAPI = new ComboCurveAPI();
-                    comboAPI.UpdateComboCurveForTypeCurveOverrideByWellIDList(updTypeCurveOverrideNewInputs, "internal",
-                        mapPath,
-                        p.GetValueByKeyAppSettings("ComboCurveJSONFileName"),
-                        p.GetValueByKeyAppSettings("ComboCurveAPIKey"));
+                //    string mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~");
+                //    ComboCurveAPI comboAPI = new ComboCurveAPI();
+                //    comboAPI.UpdateComboCurveForTypeCurveOverrideByWellIDList(updTypeCurveOverrideNewInputs, "internal",
+                //        mapPath,
+                //        p.GetValueByKeyAppSettings("ComboCurveJSONFileName"),
+                //        p.GetValueByKeyAppSettings("ComboCurveAPIKey"));
 
-                    objControllerReturnObject.Data = rows;
-                    objControllerReturnObject.Message = "Type Curve Override has Updated.";
-                    objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Success);
-                }
-                else
-                {
-                    objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Error);
-                    objControllerReturnObject.Data = "";
-                    objControllerReturnObject.Message = "An error occured while updating. Please retry.";
-                }
+                //    objControllerReturnObject.Data = rows;
+                //    objControllerReturnObject.Message = "Type Curve Override has Updated.";
+                //    objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Success);
+                //}
+                //else
+                //{
+                //    objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Error);
+                //    objControllerReturnObject.Data = "";
+                //    objControllerReturnObject.Message = "An error occured while updating. Please retry.";
+                //}
+            }
+            catch (Exception ex)
+            {
+                objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Error);
+                objControllerReturnObject.Data = "";
+                objControllerReturnObject.Message = ex.Message;
+            }
+            return Ok(objControllerReturnObject);
+        }
+
+
+        [HttpPost]
+        [ActionName("CreateDummyWellsInCC")]
+        public IHttpActionResult CreateDummyWellsInCC()
+        {
+            ControllerReturnObject objControllerReturnObject = new ControllerReturnObject();
+
+            try
+            {
+
+                CommonServiceMethods.ExecuteNonQueryWithoutParams(p.DBConnectionStringForDataProcessing, "tc.usp_Update_Type_Curve_Assignment");
+
+                ComboCurveAPI comboAPI = new ComboCurveAPI();
+                string mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~");
+                comboAPI.CreateDummyWellsInCC(mapPath,
+                            p.GetValueByKeyAppSettings("ComboCurveJSONFileName"),
+                            p.GetValueByKeyAppSettings("ComboCurveAPIKey"),
+                            p.DBConnectionStringForDataProcessing);
+
+                objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Success);
+                objControllerReturnObject.Data = "";
+                objControllerReturnObject.Message = "Dummy wells has been created.";
+
             }
             catch (Exception ex)
             {

@@ -23,7 +23,7 @@ namespace Management
                 List<LoginExtnl> loginExtnl = new List<LoginExtnl>();
 
                 BusinessObjectParser.MapRowsToObject(dt, loginExtnl, "DataModel.ExternalModels.LoginExtnl",
-                     new string[] { "UserID", "Firstname", "Lastname", "Username", "isAdmin" });
+                     new string[] { "UserID", "Firstname", "Lastname", "Username", "isAdmin", "Role", "isActive" });
 
                 return loginExtnl;
             }
@@ -43,7 +43,7 @@ namespace Management
                 List<UsersExtnl> users = new List<UsersExtnl>();
 
                 BusinessObjectParser.MapRowsToObject(dt, users, "DataModel.ExternalModels.UsersExtnl",
-                     new string[] { "UserID", "Firstname", "Lastname", "Username", "isAdmin", "Password" });
+                     new string[] { "UserID", "Firstname", "Lastname", "Username", "isAdmin", "Password", "Role", "isActive" });
 
                 return users;
             }

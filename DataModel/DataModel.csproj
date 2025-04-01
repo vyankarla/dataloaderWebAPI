@@ -61,6 +61,8 @@
     <Compile Include="ExternalModels\ProjectLogExtnl.cs" />
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_BatchsExtnl.cs" />
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdsListExtnl.cs" />
+    <Compile Include="ExternalModels\SelTypeCurveAssignmentByWellIDExtnl.cs" />
+    <Compile Include="ExternalModels\SelWellDataForCCByWellIDExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurveAssignmentExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurvesExtnl.cs" />
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdExtnl.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="InputModels\ProjectInput.cs" />
     <Compile Include="InputModels\ARIES_Master_Tables_Edit_DetailsInput.cs" />
     <Compile Include="InputModels\Type_Curve_MilestonesInput.cs" />
+    <Compile Include="InputModels\UpdDataSourceByWellIDInput.cs" />
     <Compile Include="InputModels\UpdExportFlag.cs" />
     <Compile Include="InputModels\UpdTypeCurveAssignmentInput.cs" />
     <Compile Include="InputModels\UpdTypeCurveOverrideInput.cs" />

@@ -19,5 +19,9 @@ namespace DataModel.InputModels
         public string Password { get; set; }
 
         public int LoggedInUserID { get; set; }
+
+        public string Role { get; set; }
+
+        public Boolean isActive { get; set; }
     }
 }

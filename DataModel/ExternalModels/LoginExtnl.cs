@@ -18,6 +18,10 @@ namespace DataModel.ExternalModels
 
         public Boolean isAdmin { get; set; }
 
+        public string Role { get; set; }
+
+        public Boolean isActive { get; set; }
+
     }
 
     public class UsersExtnl
@@ -33,6 +37,10 @@ namespace DataModel.ExternalModels
         public string Password { get; set; }
 
         public Boolean isAdmin { get; set; }
+
+        public string Role { get; set; }
+
+        public Boolean isActive { get; set; }
 
     }
 }

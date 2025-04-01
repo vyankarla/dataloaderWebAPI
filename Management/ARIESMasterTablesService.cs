@@ -26,7 +26,7 @@ namespace Management
                      new string[] { "PROPNUM", "LEASE_CURRENT", "LEASE_NEW", "TC_AREA_CURRENT", "TC_AREA_NEW", "RESERVOIR", "TYPECURVE_CURRENT",
                          "TYPECURVE_NEW", "TYPECURVE_RISK_CURRENT", "TYPECURVE_RISK_NEW", "PLANNED_DLL_CURRENT", "PLANNED_DLL_NEW",
                          "PLANNED_CLL_CURRENT", "PLANNED_CLL_NEW", "ONLINE_GROUPING_CURRENT", "ONLINE_GROUPING_NEW", "Well_ID", "SCHEDULED_CURRENT",
-                         "SCHEDULED_NEW", "TC_CODE_CURRENT", "TC_CODE_NEW" });
+                         "SCHEDULED_NEW", "TC_CODE_CURRENT", "TC_CODE_NEW", "Producing_Zone" });
 
                 return aRIESMasterTables;
             }
@@ -160,7 +160,28 @@ namespace Management
 
                 BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.HeaderInfoForEditStickSheetExtnl",
                     new string[] { "Well_ID", "PROPNUM", "Well_Report_Name", "Drilling_Spacing_Unit", "Development_Group", "Type_Curve_Risk",
-                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length" });
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "Producing_Zone", "Well_Type" });
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
+        public static List<HeaderInfoForEditStickSheetExtnl> SelARIESDataForEditBatchNewForApproval(string connectionString)
+        {
+            try
+            {
+                DataTable dt = ARIESMasterTablesAccess.SelARIESDataForEditBatchNewForApproval(connectionString);
+
+
+                List<HeaderInfoForEditStickSheetExtnl> returnData = new List<HeaderInfoForEditStickSheetExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.HeaderInfoForEditStickSheetExtnl",
+                    new string[] { "Well_ID", "PROPNUM", "Well_Report_Name", "Drilling_Spacing_Unit", "Development_Group", "Type_Curve_Risk",
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "Producing_Zone", "Well_Type" });
                 return returnData;
             }
             catch (Exception ex)
@@ -183,6 +204,42 @@ namespace Management
                 throw ex;
             }
             return rows;
+        }
+
+        public static int UpdDataSourceToIMByWellID(string connectionString, List<UpdDataSourceByWellIDInput> updDataSourceByWellIDInputs)
+        {
+            int rows = 0;
+            try
+            {
+                rows = ARIESMasterTablesAccess.UpdDataSourceToIMByWellID(connectionString, updDataSourceByWellIDInputs, DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+        public static List<SelWellDataForCCByWellIDExtnl> SelWellDataForCCByWellID(string connectionString, int Well_ID)
+        {
+            try
+            {
+                DataTable dt = ARIESMasterTablesAccess.SelWellDataForCCByWellID(connectionString, Well_ID);
+
+
+                List<SelWellDataForCCByWellIDExtnl> returnData = new List<SelWellDataForCCByWellIDExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.SelWellDataForCCByWellIDExtnl",
+                    new string[] { "Well_Official_Name", "DSU_Prod_Zone_Assignment", "Dev_Grouping", "Type_Curve_Risk",
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "PerfLateralLength", "CustomNumber3", "CustomNumber4" });
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
         }
 
 

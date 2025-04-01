@@ -128,5 +128,7 @@ namespace DataModel.ExternalModels
         public string Type_Curve_Assignment { get; set; }
 
         public string DSU_Prod_Zone_Assignment { get; set; }
+
+        public  string Producing_Zone { get; set; }
     }
 }

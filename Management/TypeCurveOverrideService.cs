@@ -32,7 +32,7 @@ namespace Management
                      "Well_Data_Category", "Lease_Well_Count", "Reserves_Project_Id", "Reservoir_Engineer", "Area_Team", "Comments",
                      "Row_Created_By", "Row_Created_Date", "Row_Changed_By", "Row_Changed_Date", "Row_Archived_By", "Row_Archived_Date", "Active_Ind",
                      "Type_Curve_Milestone", "Type_Curve_Name", "Inventory_Milestone", "Package_review_Milestone", "Final_Tech_Review",
-                     "Pre_frac_Milestone", "Type_Curve_Assignment", "DSU_Prod_Zone_Assignment" });
+                     "Pre_frac_Milestone", "Type_Curve_Assignment", "DSU_Prod_Zone_Assignment", "Producing_Zone" });
 
                 return headerInfoExtnls;
             }
@@ -84,6 +84,26 @@ namespace Management
                 throw ex;
             }
             return rows;
+        }
+
+        public static List<SelTypeCurveAssignmentByWellIDExtnl> SelTypeCurveAssignmentByWellID(string connectionString, int Well_ID)
+        {
+            try
+            {
+                DataTable dt = TypeCurveOverrideDataAccess.SelTypeCurveAssignmentByWellID(connectionString, Well_ID);
+
+                List<SelTypeCurveAssignmentByWellIDExtnl> headerInfoExtnls = new List<SelTypeCurveAssignmentByWellIDExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, headerInfoExtnls, "DataModel.ExternalModels.SelTypeCurveAssignmentByWellIDExtnl",
+                     new string[] { "Type_Curve_Assignment" });
+
+                return headerInfoExtnls;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
         }
 
 

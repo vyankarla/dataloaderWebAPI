@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ARIESMasterTablesAccess.cs" />
+    <Compile Include="CommonAccessMethods.cs" />
     <Compile Include="DatasetTypeColumnsDataAccess.cs" />
     <Compile Include="DevGroupingsDataAccess.cs" />
     <Compile Include="LookupDataAccess.cs" />

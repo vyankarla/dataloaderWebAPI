@@ -4,6 +4,7 @@ using ComboCurve.Api.Model;
 using DataModel.InputModels;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -121,11 +122,90 @@ namespace Utilities
                 wellInput.CustomNumber0 = item.Planned_Drilled_Lateral_Length;
                 wellInput.CustomNumber1 = item.Planned_Completed_Lateral_Length;
 
+                wellInput.CustomNumber3 = item.CustomNumber3;
+                wellInput.CustomNumber4 = item.CustomNumber4;
+
+
+                wellInput.PerfLateralLength = item.PerfLateralLength;
+
                 wellInputs.Add(wellInput);
             }
 
             UpdateWellsToComboCurvePatchWells(wellInputs, JsonPath, JsonFileName, apiKey);
 
+        }
+
+
+        public void CreateDummyWellsInCC(string JsonPath, string JsonFileName, string apiKey, string connectionString)
+        {
+            var serviceAccount = ServiceAccount.FromFile(Path.Combine(JsonPath, JsonFileName));
+            var api = new ComboCurveV1Api(serviceAccount, apiKey, "https://api.combocurve.com/");
+
+            List<WellInput> allRecords = FetchTypeCurveWells(connectionString);
+
+            SubmitTypeCurveWellsAsync(allRecords, api).GetAwaiter().GetResult();
+
+            //WellMultiStatusResponse postwellresulttc = api.PutWells(FetchTypeCurveWells(connectionString));
+        }
+
+        public static async Task SubmitTypeCurveWellsAsync(List<WellInput> allRecords, ComboCurveV1Api api)
+        {
+            int batchSize = 1000;
+            int totalRecords = allRecords.Count;
+            int totalBatches = (int)Math.Ceiling((double)totalRecords / batchSize);
+
+            for (int i = 0; i < totalBatches; i++)
+            {
+                var batch = allRecords.Skip(i * batchSize).Take(batchSize).ToList();
+                WellMultiStatusResponse postwellresulttc = api.PutWells(batch);
+            }
+        }
+
+
+        private static List<WellInput> FetchTypeCurveWells(string connectionString)
+        {
+
+            ///string connectionString = "Server=JETROCK;Database=Digital_Reservoir;User Id=sql-dwreader;Password=Drop55Pebble!;";
+
+            List<WellInput> wellDetailsList = new List<WellInput>();
+
+            // string query = "Select '99998' as well_id , 'internal' as dataSource, 'PROP101' as Propnum, '4210000001' as api_10, '42100000010001' as api_multi, 'DELAWARE123' as basin, 'EDDY' as county,'PERMIAN RESOURCES' as currentOperator ";
+
+            string query = @"SELECT    'internal' as dataSource, Type_Curve_By_Lateral_Length_Id_Formatted as well_id, Data_Source, Type_Curve_By_Lateral_Length_Name,Parent_Type_Curve_Name,
+                            Cast(Lateral_Length as numeric(8,2)) as Lateral_Length,Active_Ind FROM [tc].[Type_Curves_By_Lateral_Length]";
+
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.CommandTimeout = 360;
+                connection.Open();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        //var wellInput = new Well
+                        WellInput wellInput = new WellInput
+                       (
+                          dataSource: reader.GetString(reader.GetOrdinal("datasource")),
+                          chosenID: reader.GetString(reader.GetOrdinal("well_id")).Trim(),
+                          wellName: reader.GetString(reader.GetOrdinal("Type_Curve_By_Lateral_Length_Name")).Trim(),
+                          customString5: Convert.ToString(reader.GetOrdinal("Parent_Type_Curve_Name")),
+                          perfLateralLength: reader.IsDBNull(reader.GetOrdinal("Lateral_Length"))
+                                       ? (decimal?)null
+                                       : reader.GetDecimal(reader.GetOrdinal("Lateral_Length"))
+
+                       );
+
+                        wellDetailsList.Add(wellInput);
+                    }
+                }
+            }
+
+            return wellDetailsList;
         }
 
 

@@ -118,6 +118,27 @@ namespace DataAccess
             return rows;
         }
 
+        public static DataTable SelTypeCurveAssignmentByWellID(string ConnectionString, int Well_ID)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@Well_ID", Well_ID)
+                                                };
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "[Well].[SelTypeCurveAssignmentByWellID]", paramsArray);
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
 
     }
 }

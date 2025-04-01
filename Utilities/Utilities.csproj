@@ -91,6 +91,8 @@
     <Compile Include="IRFileLogger.cs" />
     <Compile Include="LinqHelper.cs" />
     <Compile Include="ListToTable.cs" />
+    <Compile Include="LoadAllProjectsAndRelaventInfo.cs" />
+    <Compile Include="MonthlyExportResultsProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
