@@ -63,6 +63,7 @@
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdsListExtnl.cs" />
     <Compile Include="ExternalModels\SelTypeCurveAssignmentByWellIDExtnl.cs" />
     <Compile Include="ExternalModels\SelWellDataForCCByWellIDExtnl.cs" />
+    <Compile Include="ExternalModels\WellTypesExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurveAssignmentExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurvesExtnl.cs" />
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdExtnl.cs" />

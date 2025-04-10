@@ -92,5 +92,31 @@ namespace API.Controllers
 
             return Ok(returnData);
         }
+
+        [HttpGet]
+        [ActionName("SelWellTypes")]
+        public IHttpActionResult SelWellTypes()
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+            try
+            {
+                List<WellTypesExtnl> wellTypesExtnls = LookupService.SelWellTypes(p.DBConnection);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                returnData.Data = wellTypesExtnls;
+            }
+            catch (Exception ex)
+            {
+                //IRExceptionHandler.HandleException(ProjectType.WebAPI, ex);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Data = "";
+                returnData.Message = ex.Message;
+            }
+
+            return Ok(returnData);
+        }
+
+
     }
 }

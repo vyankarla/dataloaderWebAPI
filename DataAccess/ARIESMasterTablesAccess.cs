@@ -246,7 +246,7 @@ namespace DataAccess
             return null;
         }
 
-        public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs, DateTime CurrentUtcDateTime)
+        public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs, DateTime CurrentUtcDateTime, Boolean InsertFlag)
         {
 
             SqlConnection conn = new SqlConnection(connectionString);
@@ -267,7 +267,8 @@ namespace DataAccess
                                                 new SqlParameter("@Planned_Drilled_Lateral_Length", item.Planned_Drilled_Lateral_Length),
                                                 new SqlParameter("@Planned_Completed_Lateral_Length", item.Planned_Completed_Lateral_Length),
                                                 new SqlParameter("@LoggedInUserName", item.LoggedInUserName),
-                                                new SqlParameter("@Well_Type", item.Well_Type)
+                                                new SqlParameter("@Well_Type", item.Well_Type),
+                                                new SqlParameter("@InsertFlag", InsertFlag)
                                                 };
 
                     rows = rows + SQLHelper.SqlHelper.ExecuteNonQuery(trans, CommandType.StoredProcedure, "[well].[UpdHeader]", paramsArrayRow);
@@ -319,6 +320,43 @@ namespace DataAccess
             }
 
             return rows;
+
+        }
+
+        public static int RejectDataSourceByWellID(string connectionString, List<RejectDataSourceByWellIDInput> rejectDataSourceByWellIDInputs, DateTime CurrentUtcDateTime)
+        {
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+            SqlTransaction trans = conn.BeginTransaction();
+            int rows = 0;
+
+            try
+            {
+                foreach (RejectDataSourceByWellIDInput item in rejectDataSourceByWellIDInputs)
+                {
+                    SqlParameter[] paramsArrayRow = new SqlParameter[]{
+                                                new SqlParameter("@Well_ID", item.Well_ID),
+                                                new SqlParameter("@CurrentUtcDateTime", CurrentUtcDateTime),
+                                                new SqlParameter("@LoggedInUserID", item.LoggedInUserID),
+                                                new SqlParameter("@LoggedInUserName", item.LoggedInUserName)
+                                                };
+
+                    rows = rows + SQLHelper.SqlHelper.ExecuteNonQuery(trans, CommandType.StoredProcedure, "[well].[RejectDataSourceByWellID]", paramsArrayRow);
+
+                }
+
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+                throw ex;
+            }
+
+            return rows;
+
         }
 
         public static DataTable SelWellDataForCCByWellID(string connectionString, int Well_ID)

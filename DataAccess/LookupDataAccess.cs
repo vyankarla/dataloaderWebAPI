@@ -61,5 +61,22 @@ namespace DataAccess
             return null;
         }
 
+        public static DataTable SelWellTypes(string ConnectionString)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "[ref].[SelWellTypes]");
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
     }
 }

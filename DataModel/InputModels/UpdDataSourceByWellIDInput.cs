@@ -14,4 +14,14 @@ namespace DataModel.InputModels
 
         public int LoggedInUserID { get; set; }
     }
+
+    public class RejectDataSourceByWellIDInput
+    {
+        public int Well_ID { get; set; }
+
+        public string LoggedInUserName { get; set; }
+
+        public int LoggedInUserID { get; set; }
+    }
+
 }

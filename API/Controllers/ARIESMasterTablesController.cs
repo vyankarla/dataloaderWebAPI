@@ -267,7 +267,7 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                List<HeaderInfoForEditStickSheetExtnl> headerInfo = ARIESMasterTablesService.SelARIESDataForEditBatchNewForApproval(p.DBConnectionStringForDataProcessing);
+                List<HeaderInfoForEditStickSheetForApprovalExtnl> headerInfo = ARIESMasterTablesService.SelARIESDataForEditBatchNewForApproval(p.DBConnectionStringForDataProcessing);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 returnData.Data = headerInfo;
@@ -292,7 +292,61 @@ namespace API.Controllers
 
             try
             {
-                int rows = ARIESMasterTablesService.UpdHeaderForEditBatchNew(p.DBConnectionStringForDataProcessing, updARIESMasterTablesInputs);
+                List<HeaderInfoForEditStickSheetExtnl> dbRecords = ARIESMasterTablesService.SelARIESDataForEditBatchNew(p.DBConnectionStringForDataProcessing);
+
+                foreach (var item in updARIESMasterTablesInputs)
+                {
+                    HeaderInfoForEditStickSheetExtnl dbRecordsByWellIDRecord = dbRecords.Where(x => x.Well_ID == item.Well_ID).ToList().FirstOrDefault();
+
+                    // If Well_Type or Planned_Drilled_Lateral_Length or Planned_Completed_Lateral_Length is changed
+                    // then insert record into db
+                    // other wise execute combo curve api
+                    if (item.Well_Type != dbRecordsByWellIDRecord.Well_Type
+                        || item.Planned_Drilled_Lateral_Length != Convert.ToDecimal(dbRecordsByWellIDRecord.Planned_Drilled_Lateral_Length)
+                        || item.Planned_Completed_Lateral_Length != Convert.ToDecimal(dbRecordsByWellIDRecord.Planned_Completed_Lateral_Length))
+                    {
+                        List<HeaderInfoForEditStickSheetInput> insertRecord = new List<HeaderInfoForEditStickSheetInput>();
+                        insertRecord.Add(item);
+                        int rows = ARIESMasterTablesService.UpdHeaderForEditBatchNew(p.DBConnectionStringForDataProcessing, insertRecord, true);
+                    }
+                    else
+                    {
+                        List<HeaderInfoForEditStickSheetInput> insertRecord = new List<HeaderInfoForEditStickSheetInput>();
+                        insertRecord.Add(item);
+                        int rows = ARIESMasterTablesService.UpdHeaderForEditBatchNew(p.DBConnectionStringForDataProcessing, insertRecord, false);
+
+                        List<SelWellDataForCCByWellIDExtnl> selWellDataForCCByWellIDExtnls = ARIESMasterTablesService.SelWellDataForCCByWellID(p.DBConnectionStringForDataProcessing, item.Well_ID);
+
+                        if (selWellDataForCCByWellIDExtnls != null && selWellDataForCCByWellIDExtnls.Count > 0)
+                        {
+                            List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputsUpdated = new List<HeaderInfoForEditStickSheetInput>();
+                            HeaderInfoForEditStickSheetInput headerInfoForEditStickSheetInputUpdated = new HeaderInfoForEditStickSheetInput();
+
+                            headerInfoForEditStickSheetInputUpdated.Well_ID = item.Well_ID;
+                            headerInfoForEditStickSheetInputUpdated.Well_Report_Name = selWellDataForCCByWellIDExtnls[0].Well_Official_Name;
+                            headerInfoForEditStickSheetInputUpdated.Drilling_Spacing_Unit = selWellDataForCCByWellIDExtnls[0].DSU_Prod_Zone_Assignment;
+                            headerInfoForEditStickSheetInputUpdated.Development_Group = selWellDataForCCByWellIDExtnls[0].Dev_Grouping;
+                            headerInfoForEditStickSheetInputUpdated.Type_Curve_Risk = selWellDataForCCByWellIDExtnls[0].Type_Curve_Risk;
+                            headerInfoForEditStickSheetInputUpdated.Planned_Drilled_Lateral_Length = selWellDataForCCByWellIDExtnls[0].Planned_Drilled_Lateral_Length;
+                            headerInfoForEditStickSheetInputUpdated.Planned_Completed_Lateral_Length = selWellDataForCCByWellIDExtnls[0].Planned_Completed_Lateral_Length;
+                            headerInfoForEditStickSheetInputUpdated.PerfLateralLength = selWellDataForCCByWellIDExtnls[0].PerfLateralLength;
+
+                            headerInfoForEditStickSheetInputUpdated.CustomNumber3 = selWellDataForCCByWellIDExtnls[0].CustomNumber3;
+                            headerInfoForEditStickSheetInputUpdated.CustomNumber4 = selWellDataForCCByWellIDExtnls[0].CustomNumber4;
+
+                            updARIESMasterTablesInputsUpdated.Add(headerInfoForEditStickSheetInputUpdated);
+
+                            string mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~");
+                            ComboCurveAPI comboAPI = new ComboCurveAPI();
+                            comboAPI.UpdateComboCurveForHeaderForEditBatchNew(updARIESMasterTablesInputsUpdated, "internal",
+                                mapPath,
+                                p.GetValueByKeyAppSettings("ComboCurveJSONFileName"),
+                                p.GetValueByKeyAppSettings("ComboCurveAPIKey"));
+                        }
+                    }
+                }
+
+                
 
 
                 //foreach (var item in updARIESMasterTablesInputs)
@@ -385,6 +439,30 @@ namespace API.Controllers
 
                 objControllerReturnObject.Data = 1;
                 objControllerReturnObject.Message = "Stick sheet edited updated";
+                objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Error);
+                objControllerReturnObject.Data = "";
+                objControllerReturnObject.Message = ex.Message;
+            }
+            return Ok(objControllerReturnObject);
+        }
+
+
+        [HttpPost]
+        [ActionName("DeleteRejectedPreApprovalsByWellID")]
+        public IHttpActionResult RejectDataSourceByWellID(List<RejectDataSourceByWellIDInput> rejectDataSourceByWellIDInputs)
+        {
+            ControllerReturnObject objControllerReturnObject = new ControllerReturnObject();
+
+            try
+            {
+                int rows = ARIESMasterTablesService.RejectDataSourceByWellID(p.DBConnectionStringForDataProcessing, rejectDataSourceByWellIDInputs);
+
+                objControllerReturnObject.Data = 1;
+                objControllerReturnObject.Message = "Rejected selected wells";
                 objControllerReturnObject.Status = Convert.ToInt32(WebAPIStatus.Success);
             }
             catch (Exception ex)

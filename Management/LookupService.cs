@@ -75,5 +75,25 @@ namespace Management
             return null;
         }
 
+        public static List<WellTypesExtnl> SelWellTypes(string connectionString)
+        {
+            try
+            {
+                DataTable dt = LookupDataAccess.SelWellTypes(connectionString);
+
+                List<WellTypesExtnl> wellTypesExtnls = new List<WellTypesExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, wellTypesExtnls, "DataModel.ExternalModels.WellTypesExtnl",
+                     new string[] { "Well_Type", "Row_Created_By", "Active_Ind" });
+
+                return wellTypesExtnls;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
     }
 }

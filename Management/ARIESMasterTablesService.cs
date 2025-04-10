@@ -160,7 +160,7 @@ namespace Management
 
                 BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.HeaderInfoForEditStickSheetExtnl",
                     new string[] { "Well_ID", "PROPNUM", "Well_Report_Name", "Drilling_Spacing_Unit", "Development_Group", "Type_Curve_Risk",
-                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "Producing_Zone", "Well_Type" });
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "Producing_Zone", "Well_Type", "Study_Area" });
                 return returnData;
             }
             catch (Exception ex)
@@ -170,19 +170,34 @@ namespace Management
             return null;
         }
 
-        public static List<HeaderInfoForEditStickSheetExtnl> SelARIESDataForEditBatchNewForApproval(string connectionString)
+        public static List<HeaderInfoForEditStickSheetForApprovalExtnl> SelARIESDataForEditBatchNewForApproval(string connectionString)
         {
             try
             {
                 DataTable dt = ARIESMasterTablesAccess.SelARIESDataForEditBatchNewForApproval(connectionString);
 
 
-                List<HeaderInfoForEditStickSheetExtnl> returnData = new List<HeaderInfoForEditStickSheetExtnl>();
+                List<HeaderInfoForEditStickSheetForApprovalExtnl> returnData = new List<HeaderInfoForEditStickSheetForApprovalExtnl>();
 
-                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.HeaderInfoForEditStickSheetExtnl",
+                List<HeaderInfoForEditStickSheetForApprovalExtnl> finalReturnData = new List<HeaderInfoForEditStickSheetForApprovalExtnl>();
+
+                BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.HeaderInfoForEditStickSheetForApprovalExtnl",
                     new string[] { "Well_ID", "PROPNUM", "Well_Report_Name", "Drilling_Spacing_Unit", "Development_Group", "Type_Curve_Risk",
-                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "Producing_Zone", "Well_Type" });
-                return returnData;
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "Producing_Zone", "Well_Type", "Data_Source" });
+
+                foreach (var item in returnData.Where(x => x.Data_Source == "Inventory Pre-Approval").ToList())
+                {
+                    HeaderInfoForEditStickSheetForApprovalExtnl headerRow = new HeaderInfoForEditStickSheetForApprovalExtnl();
+                    headerRow = item;
+
+                    foreach (var child in returnData.Where(x => x.Data_Source != "Inventory Pre-Approval" && x.Well_ID == item.Well_ID).ToList())
+                    {
+                        item.Clilds.Add(child);
+                    }
+                    finalReturnData.Add(item);
+                }
+
+                return finalReturnData;
             }
             catch (Exception ex)
             {
@@ -191,12 +206,12 @@ namespace Management
             return null;
         }
 
-        public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs)
+        public static int UpdHeaderForEditBatchNew(string connectionString, List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs, Boolean InsertFlag)
         {
             int rows = 0;
             try
             {
-                rows = ARIESMasterTablesAccess.UpdHeaderForEditBatchNew(connectionString, updARIESMasterTablesInputs, DateTime.UtcNow);
+                rows = ARIESMasterTablesAccess.UpdHeaderForEditBatchNew(connectionString, updARIESMasterTablesInputs, DateTime.UtcNow, InsertFlag);
             }
             catch (Exception ex)
             {
@@ -212,6 +227,21 @@ namespace Management
             try
             {
                 rows = ARIESMasterTablesAccess.UpdDataSourceToIMByWellID(connectionString, updDataSourceByWellIDInputs, DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+                throw ex;
+            }
+            return rows;
+        }
+
+        public static int RejectDataSourceByWellID(string connectionString, List<RejectDataSourceByWellIDInput> rejectDataSourceByWellIDInputs)
+        {
+            int rows = 0;
+            try
+            {
+                rows = ARIESMasterTablesAccess.RejectDataSourceByWellID(connectionString, rejectDataSourceByWellIDInputs, DateTime.UtcNow);
             }
             catch (Exception ex)
             {
