@@ -93,6 +93,8 @@
     <Compile Include="CommonServiceMethods.cs" />
     <Compile Include="DatasetTypeColumnsService.cs" />
     <Compile Include="DevGroupingsService.cs" />
+    <Compile Include="DSUHeaderService.cs" />
+    <Compile Include="DSUSwimLanesService.cs" />
     <Compile Include="LookupService.cs" />
     <Compile Include="ProjectService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

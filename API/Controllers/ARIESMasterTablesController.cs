@@ -15,7 +15,7 @@ using static API.Common.Base;
 namespace API.Controllers
 {
     [Route("api/ARIESMasterTables/{action}")]
-    //[BasicAuthentication]
+    [BasicAuthentication]
     public class ARIESMasterTablesController : ApiController
     {
         Base p = new Base();
@@ -426,11 +426,13 @@ namespace API.Controllers
                         headerInfoForEditStickSheetInputUpdated.CustomNumber3 = selWellDataForCCByWellIDExtnls[0].CustomNumber3;
                         headerInfoForEditStickSheetInputUpdated.CustomNumber4 = selWellDataForCCByWellIDExtnls[0].CustomNumber4;
 
+                        headerInfoForEditStickSheetInputUpdated.Well_Type = selWellDataForCCByWellIDExtnls[0].Well_type;
+
                         updARIESMasterTablesInputsUpdated.Add(headerInfoForEditStickSheetInputUpdated);
 
                         string mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~");
                         ComboCurveAPI comboAPI = new ComboCurveAPI();
-                        comboAPI.UpdateComboCurveForHeaderForEditBatchNew(updARIESMasterTablesInputsUpdated, "internal",
+                        comboAPI.UpdateComboCurveForHeaderForEditBatchNewForApproval(updARIESMasterTablesInputsUpdated, "internal",
                             mapPath,
                             p.GetValueByKeyAppSettings("ComboCurveJSONFileName"),
                             p.GetValueByKeyAppSettings("ComboCurveAPIKey"));

@@ -52,6 +52,9 @@
     <Compile Include="ExternalModels\DatasetTypesExtnl.cs" />
     <Compile Include="ExternalModels\DatasourceTypesExtnl.cs" />
     <Compile Include="ExternalModels\DevGroupingsExtnl.cs" />
+    <Compile Include="ExternalModels\DSUHeadersExtnl.cs" />
+    <Compile Include="ExternalModels\DSUProducinigZonesExtnl.cs" />
+    <Compile Include="ExternalModels\DSUSwimLanesExtnl.cs" />
     <Compile Include="ExternalModels\FileTypesExtnl.cs" />
     <Compile Include="ExternalModels\FileUploadReturnExtnl.cs" />
     <Compile Include="ExternalModels\HeaderInfoExtnl.cs" />
@@ -63,6 +66,8 @@
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdsListExtnl.cs" />
     <Compile Include="ExternalModels\SelTypeCurveAssignmentByWellIDExtnl.cs" />
     <Compile Include="ExternalModels\SelWellDataForCCByWellIDExtnl.cs" />
+    <Compile Include="ExternalModels\SwimLaneInterests.cs" />
+    <Compile Include="ExternalModels\SWIMLaneOwnershipPivotViewExtnl.cs" />
     <Compile Include="ExternalModels\WellTypesExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurveAssignmentExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurvesExtnl.cs" />
@@ -78,6 +83,8 @@
     <Compile Include="InputModels\ProjectColumnMappingInput.cs" />
     <Compile Include="InputModels\ProjectInput.cs" />
     <Compile Include="InputModels\ARIES_Master_Tables_Edit_DetailsInput.cs" />
+    <Compile Include="InputModels\SwimLaneInterestsInput.cs" />
+    <Compile Include="InputModels\Swim_Lane_OwnershipInput.cs" />
     <Compile Include="InputModels\Type_Curve_MilestonesInput.cs" />
     <Compile Include="InputModels\UpdDataSourceByWellIDInput.cs" />
     <Compile Include="InputModels\UpdExportFlag.cs" />

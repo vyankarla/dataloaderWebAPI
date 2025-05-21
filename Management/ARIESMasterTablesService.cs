@@ -262,7 +262,7 @@ namespace Management
 
                 BusinessObjectParser.MapRowsToObject(dt, returnData, "DataModel.ExternalModels.SelWellDataForCCByWellIDExtnl",
                     new string[] { "Well_Official_Name", "DSU_Prod_Zone_Assignment", "Dev_Grouping", "Type_Curve_Risk",
-                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "PerfLateralLength", "CustomNumber3", "CustomNumber4" });
+                    "Planned_Drilled_Lateral_Length", "Planned_Completed_Lateral_Length", "PerfLateralLength", "CustomNumber3", "CustomNumber4", "Well_type" });
                 return returnData;
             }
             catch (Exception ex)

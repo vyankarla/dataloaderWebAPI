@@ -159,9 +159,11 @@
     <Compile Include="Controllers\ARIESMasterTablesController.cs" />
     <Compile Include="Controllers\DatasetTypeColumnsController.cs" />
     <Compile Include="Controllers\DevGroupingsController.cs" />
+    <Compile Include="Controllers\DSUHeadersController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\SwimLaneInterestController.cs" />
     <Compile Include="Controllers\TypeCurveAssignmentController.cs" />
     <Compile Include="Controllers\TypeCurveOverrideController.cs" />
     <Compile Include="Global.asax.cs">

@@ -135,6 +135,55 @@ namespace Utilities
 
         }
 
+        public void UpdateComboCurveForHeaderForEditBatchNewForApproval(List<HeaderInfoForEditStickSheetInput> updARIESMasterTablesInputs, string dataSource,
+            string JsonPath, string JsonFileName, string apiKey)
+        {
+            //List<WellInput> wellInputs = new List<WellInput>();
+            //foreach (var item in updARIESMasterTablesInputs)
+            //{
+            //    WellInput wellInput = new WellInput
+            //                    (
+            //                        dataSource: dataSource,
+            //                        chosenID: Convert.ToString(item.Well_ID),
+            //                        wellName: item.Well_Report_Name,
+            //                        customString14: item.Drilling_Spacing_Unit,
+            //                        customString15: item.Development_Group,
+            //                        customNumber2: item.Type_Curve_Risk,
+            //                        customNumber0: item.Planned_Drilled_Lateral_Length,
+            //                        customNumber1: item.Planned_Completed_Lateral_Length
+            //                    );
+            //    wellInputs.Add(wellInput);
+            //}
+
+            //UpdateWellsToComboCurve(wellInputs, JsonPath, JsonFileName, apiKey);
+
+            List<WellPatchInput> wellInputs = new List<WellPatchInput>();
+            foreach (var item in updARIESMasterTablesInputs)
+            {
+                WellPatchInput wellInput = new WellPatchInput();
+                wellInput.DataSource = dataSource;
+                wellInput.ChosenID = Convert.ToString(item.Well_ID);
+                wellInput.WellName = item.Well_Report_Name;
+                wellInput.CustomString14 = item.Drilling_Spacing_Unit;
+                wellInput.CustomString15 = item.Development_Group;
+                wellInput.CustomNumber2 = item.Type_Curve_Risk;
+                wellInput.CustomNumber0 = item.Planned_Drilled_Lateral_Length;
+                wellInput.CustomNumber1 = item.Planned_Completed_Lateral_Length;
+
+                wellInput.CustomNumber3 = item.CustomNumber3;
+                wellInput.CustomNumber4 = item.CustomNumber4;
+
+                wellInput.HoleDirection = item.Well_Type;
+
+                wellInput.PerfLateralLength = item.PerfLateralLength;
+
+                wellInputs.Add(wellInput);
+            }
+
+            UpdateWellsToComboCurvePatchWells(wellInputs, JsonPath, JsonFileName, apiKey);
+
+        }
+
 
         public void CreateDummyWellsInCC(string JsonPath, string JsonFileName, string apiKey, string connectionString)
         {

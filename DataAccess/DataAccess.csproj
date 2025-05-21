@@ -45,6 +45,8 @@
     <Compile Include="CommonAccessMethods.cs" />
     <Compile Include="DatasetTypeColumnsDataAccess.cs" />
     <Compile Include="DevGroupingsDataAccess.cs" />
+    <Compile Include="DSUHeaderAccess.cs" />
+    <Compile Include="DSUSwimLanesAccess.cs" />
     <Compile Include="LookupDataAccess.cs" />
     <Compile Include="ProjectDataAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -25,5 +25,7 @@ namespace DataModel.ExternalModels
         public decimal CustomNumber3 { get; set; }
 
         public decimal CustomNumber4 { get; set; }
+
+        public string Well_type { get; set; }
     }
 }
