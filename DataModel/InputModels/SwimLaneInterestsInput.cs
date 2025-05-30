@@ -11,7 +11,7 @@ namespace DataModel.InputModels
     {
         public SwimLaneInterestsInput()
         {
-            swimLaneOwnershipPivotViewExtnls = new List<SWIMLaneOwnershipPivotViewExtnl>();
+            swimLaneOwnershipPivotViewExtnls = new List<SWIMLaneOwnershipPivotViewInput>();
         }
 
         public int Confidence_Level { get; set; }
@@ -22,6 +22,6 @@ namespace DataModel.InputModels
 
         public string LoggedInUserName { get; set; }
 
-        public List<SWIMLaneOwnershipPivotViewExtnl> swimLaneOwnershipPivotViewExtnls { get; set; }
+        public List<SWIMLaneOwnershipPivotViewInput> swimLaneOwnershipPivotViewExtnls { get; set; }
     }
 }

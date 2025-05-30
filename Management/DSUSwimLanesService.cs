@@ -145,7 +145,8 @@ namespace Management
                     if (item.BPO_WI_1 != null || item.BPO_NRI_1 != null || item.APO_WI_1 != null || item.APO_NRI_1 != null)
                     {
                         Swim_Lane_OwnershipInput row = new Swim_Lane_OwnershipInput();
-                        row.DSU_Swim_Lane_Id = 1;
+                        row.DSU_Header_ID = item.DSU_Header_Id;
+                        row.DSU_Swim_Lane_Number = 1;
                         row.Producing_Zone = item.Producing_Zone;
                         if (item.BPO_WI_1 != null)
                         {
@@ -189,7 +190,8 @@ namespace Management
                     if (item.BPO_WI_2 != null || item.BPO_NRI_2 != null || item.APO_WI_2 != null || item.APO_NRI_2 != null)
                     {
                         Swim_Lane_OwnershipInput row = new Swim_Lane_OwnershipInput();
-                        row.DSU_Swim_Lane_Id = 2;
+                        row.DSU_Header_ID = item.DSU_Header_Id;
+                        row.DSU_Swim_Lane_Number = 2;
                         row.Producing_Zone = item.Producing_Zone;
                         if (item.BPO_WI_2 != null)
                         {
@@ -233,7 +235,8 @@ namespace Management
                     if (item.BPO_WI_3 != null || item.BPO_NRI_3 != null || item.APO_WI_3 != null || item.APO_NRI_3 != null)
                     {
                         Swim_Lane_OwnershipInput row = new Swim_Lane_OwnershipInput();
-                        row.DSU_Swim_Lane_Id = 3;
+                        row.DSU_Header_ID = item.DSU_Header_Id;
+                        row.DSU_Swim_Lane_Number = 3;
                         row.Producing_Zone = item.Producing_Zone;
                         if (item.BPO_WI_3 != null)
                         {
@@ -277,7 +280,8 @@ namespace Management
                     if (item.BPO_WI_4 != null || item.BPO_NRI_4 != null || item.APO_WI_4 != null || item.APO_NRI_4 != null)
                     {
                         Swim_Lane_OwnershipInput row = new Swim_Lane_OwnershipInput();
-                        row.DSU_Swim_Lane_Id = 4;
+                        row.DSU_Header_ID = item.DSU_Header_Id;
+                        row.DSU_Swim_Lane_Number = 4;
                         row.Producing_Zone = item.Producing_Zone;
                         if (item.BPO_WI_4 != null)
                         {

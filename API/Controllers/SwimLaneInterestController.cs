@@ -27,7 +27,7 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                SwimLaneInterests swimLaneInterests = DSUSwimLanesService.SelDataForSwimLaneInterests(p.DBConnection, DSUHeaderID);
+                SwimLaneInterests swimLaneInterests = DSUSwimLanesService.SelDataForSwimLaneInterests(p.DBConnectionStringForDataProcessing, DSUHeaderID);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 returnData.Data = swimLaneInterests;
@@ -51,7 +51,7 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                List<SWIMLaneOwnershipPivotViewExtnl> swimLaneOwnership = DSUSwimLanesService.SelSWIMLaneOwnershipPivotView(p.DBConnection, DSUHeaderID);
+                List<SWIMLaneOwnershipPivotViewExtnl> swimLaneOwnership = DSUSwimLanesService.SelSWIMLaneOwnershipPivotView(p.DBConnectionStringForDataProcessing, DSUHeaderID);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 returnData.Data = swimLaneOwnership;
@@ -77,11 +77,11 @@ namespace API.Controllers
             {
                 if (swimLaneInterestsInput.swimLaneOwnershipPivotViewExtnls != null && swimLaneInterestsInput.swimLaneOwnershipPivotViewExtnls.Count > 0)
                 {
-                    DSUSwimLanesService.UpdConfidenceLevelDSUHeaderByDSUHeaderID(p.DBConnection,
+                    DSUSwimLanesService.UpdConfidenceLevelDSUHeaderByDSUHeaderID(p.DBConnectionStringForDataProcessing,
                         swimLaneInterestsInput.swimLaneOwnershipPivotViewExtnls[0].DSU_Header_Id, swimLaneInterestsInput.Confidence_Level,
                         swimLaneInterestsInput.Comments, swimLaneInterestsInput.LoggedInUserID, swimLaneInterestsInput.LoggedInUserName);
 
-                    DSUSwimLanesService.UpdDSU_Swim_Lane_OwnershipByProducingZoneAndSwimLaneID(p.DBConnection, swimLaneInterestsInput);
+                    DSUSwimLanesService.UpdDSU_Swim_Lane_OwnershipByProducingZoneAndSwimLaneID(p.DBConnectionStringForDataProcessing, swimLaneInterestsInput);
 
                     returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                     returnData.Data = "";

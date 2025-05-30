@@ -47,6 +47,7 @@
     <Compile Include="DevGroupingsDataAccess.cs" />
     <Compile Include="DSUHeaderAccess.cs" />
     <Compile Include="DSUSwimLanesAccess.cs" />
+    <Compile Include="ForecastDailyVolumesAccess.cs" />
     <Compile Include="LookupDataAccess.cs" />
     <Compile Include="ProjectDataAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

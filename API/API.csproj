@@ -160,6 +160,7 @@
     <Compile Include="Controllers\DatasetTypeColumnsController.cs" />
     <Compile Include="Controllers\DevGroupingsController.cs" />
     <Compile Include="Controllers\DSUHeadersController.cs" />
+    <Compile Include="Controllers\ForecastDailyVolumesController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />

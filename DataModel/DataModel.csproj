@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BusinessObjects\BusinessObjectParser.cs" />
     <Compile Include="BusinessObjects\Dailyprod_Staging.cs" />
+    <Compile Include="BusinessObjects\ForecastDailyVolumesModel.cs" />
     <Compile Include="BusinessObjects\MonthlyProd_Staging.cs" />
     <Compile Include="BusinessObjects\Project.cs" />
     <Compile Include="BusinessObjects\ProjectColumnMapping.cs" />
@@ -53,10 +54,13 @@
     <Compile Include="ExternalModels\DatasourceTypesExtnl.cs" />
     <Compile Include="ExternalModels\DevGroupingsExtnl.cs" />
     <Compile Include="ExternalModels\DSUHeadersExtnl.cs" />
+    <Compile Include="ExternalModels\DSUHeaderWells.cs" />
     <Compile Include="ExternalModels\DSUProducinigZonesExtnl.cs" />
     <Compile Include="ExternalModels\DSUSwimLanesExtnl.cs" />
     <Compile Include="ExternalModels\FileTypesExtnl.cs" />
     <Compile Include="ExternalModels\FileUploadReturnExtnl.cs" />
+    <Compile Include="ExternalModels\ForecastDailyVolumesExtnl.cs" />
+    <Compile Include="ExternalModels\ForecastOutputExtnl.cs" />
     <Compile Include="ExternalModels\HeaderInfoExtnl.cs" />
     <Compile Include="ExternalModels\HeaderInfoForEditStickSheetExtnl.cs" />
     <Compile Include="ExternalModels\LoginExtnl.cs" />
@@ -72,6 +76,7 @@
     <Compile Include="ExternalModels\TypeCurveAssignmentExtnl.cs" />
     <Compile Include="ExternalModels\TypeCurvesExtnl.cs" />
     <Compile Include="ExternalModels\SelARIES_Master_Tables_Edit_DetailsByBatchIdExtnl.cs" />
+    <Compile Include="InputModels\apiDailyForecastVolumesInput.cs" />
     <Compile Include="InputModels\ARIES_Master_Tables_Drop_DetailsInput.cs" />
     <Compile Include="InputModels\ARIES_Master_Tables_Edit_BatchInput.cs" />
     <Compile Include="InputModels\ChangePasswordInput.cs" />
@@ -84,6 +89,7 @@
     <Compile Include="InputModels\ProjectInput.cs" />
     <Compile Include="InputModels\ARIES_Master_Tables_Edit_DetailsInput.cs" />
     <Compile Include="InputModels\SwimLaneInterestsInput.cs" />
+    <Compile Include="InputModels\SWIMLaneOwnershipPivotViewInput.cs" />
     <Compile Include="InputModels\Swim_Lane_OwnershipInput.cs" />
     <Compile Include="InputModels\Type_Curve_MilestonesInput.cs" />
     <Compile Include="InputModels\UpdDataSourceByWellIDInput.cs" />

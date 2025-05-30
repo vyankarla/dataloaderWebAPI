@@ -15,7 +15,7 @@ using static API.Common.Base;
 namespace API.Controllers
 {
     [Route("api/TypeCurveOverride/{action}")]
-    //[BasicAuthentication]
+    [BasicAuthentication]
     public class TypeCurveOverrideController : ApiController
     {
         Base p = new Base();

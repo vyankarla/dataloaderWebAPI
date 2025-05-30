@@ -56,6 +56,28 @@ namespace Management
             return null;
         }
 
+        public static List<DSUHeaderWells> SelWellsInDSUByDSUHeaderID(string connectionString, int DSU_Header_Id)
+        {
+            try
+            {
+                DataTable dt = DSUHeaderAccess.SelWellsInDSUByDSUHeaderID(connectionString, DSU_Header_Id);
+
+                List<DSUHeaderWells> DSUHeadersExtnl = new List<DSUHeaderWells>();
+
+                BusinessObjectParser.MapRowsToObject(dt, DSUHeadersExtnl, "DataModel.ExternalModels.DSUHeaderWells",
+                     new string[] { "Well_ID", "Well_Official_Name", "Operator", "API_10", "PROPNUM", "Reserves_Category",
+                     "Producing_Zone", "Missing_Zone_In_Swim_Lane", "Drilling_Spacing_Unit", "Swim_Lane_Number", "Lateral_Length", "BPO_WI",
+                     "BPO_NRI", "APO_WI", "APO_NRI", "DSU_Header_Id" });
+
+                return DSUHeadersExtnl;
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.BLL, ex);
+            }
+            return null;
+        }
+
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ComboCurve.Api.Api;
 using ComboCurve.Api.Auth;
 using ComboCurve.Api.Model;
+using DataModel.ExternalModels;
 using DataModel.InputModels;
 using System;
 using System.Collections.Generic;
@@ -255,6 +256,57 @@ namespace Utilities
             }
 
             return wellDetailsList;
+        }
+
+        public List<ForecastOutputExtnl> GetForecastOutputData(string JsonPath, string JsonFileName, string apiKey,
+            string projectID, string forecastID, string projectName, string forecastName)
+        {
+            var serviceAccount = ServiceAccount.FromFile(Path.Combine(JsonPath, JsonFileName));
+            var api = new ComboCurveV1Api(serviceAccount, apiKey, "https://api.combocurve.com/");
+
+            List<ForecastOutputExtnl> forecastOutputExtnls = new List<ForecastOutputExtnl>();
+
+            int skip = 0;
+            int take = 1000;
+            while (take == 1000)
+            {
+
+                IEnumerable<ForecastOutput> ForecastOutputData;
+                ForecastOutputData = api.GetForecastOutputs(projectID, forecastID, skip, take);
+                take = ForecastOutputData.Count();
+                skip = skip + take;
+
+                foreach (var item in ForecastOutputData)
+                {
+                    ForecastOutputExtnl forecastOutputExtnl = new ForecastOutputExtnl();
+                    forecastOutputExtnl.projectName = projectName;
+                    forecastOutputExtnl.forecastName = forecastName;
+                    forecastOutputExtnl.Best = Convert.ToString(item.Best);
+                    forecastOutputExtnl.CreatedAt = item.CreatedAt;
+                    forecastOutputExtnl.Forecasted = item.Forecasted;
+                    forecastOutputExtnl.ForecastedAt = item.ForecastedAt;
+                    forecastOutputExtnl.ForecastedBy = item.ForecastedBy;
+                    forecastOutputExtnl.Id = item.Id;
+                    forecastOutputExtnl.P10 = Convert.ToString(item.P10);
+                    forecastOutputExtnl.P50 = Convert.ToString(item.P50);
+                    forecastOutputExtnl.P90 = Convert.ToString(item.P90);
+                    forecastOutputExtnl.Phase = item.Phase;
+                    forecastOutputExtnl.Ratio = Convert.ToString(item.Ratio);
+                    forecastOutputExtnl.ReviewedAt = item.ReviewedAt;
+                    forecastOutputExtnl.ReviewedBy = item.ReviewedBy;
+                    forecastOutputExtnl.RunDate = item.RunDate;
+                    forecastOutputExtnl.Status = item.Status;
+                    forecastOutputExtnl.TypeCurve = item.TypeCurve;
+                    forecastOutputExtnl.TypeCurveApplySettings = Convert.ToString(item.TypeCurveApplySettings);
+                    forecastOutputExtnl.UpdatedAt = item.UpdatedAt;
+                    forecastOutputExtnl.Well = item.Well;
+                    //forecastOutputExtnl.rowinsertdate = DateTime.UtcNow;
+
+                    forecastOutputExtnls.Add(forecastOutputExtnl);
+                }
+            }
+
+            return forecastOutputExtnls;
         }
 
 

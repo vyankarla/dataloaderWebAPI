@@ -23,6 +23,14 @@ namespace API.Common
             }
         }
 
+        public string CCStagingDBConn
+        {
+            get
+            {
+                return System.Configuration.ConfigurationManager.ConnectionStrings["CCStagingDBConn"].ToString();
+            }
+        }
+
         public string GetValueByKeyAppSettings(string key)
         {
             return System.Configuration.ConfigurationManager.AppSettings[key];

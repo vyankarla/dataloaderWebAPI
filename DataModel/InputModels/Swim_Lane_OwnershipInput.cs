@@ -8,7 +8,9 @@ namespace DataModel.InputModels
 {
     public class Swim_Lane_OwnershipInput
     {
-        public int DSU_Swim_Lane_Id { get; set; }
+        public int DSU_Header_ID { get; set; }
+
+        public int DSU_Swim_Lane_Number { get; set; }
 
         public string Producing_Zone { get; set; }
 

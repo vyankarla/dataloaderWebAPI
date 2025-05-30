@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataModel.ExternalModels
+namespace DataModel.InputModels
 {
-    public class SWIMLaneOwnershipPivotViewExtnl
+    public class SWIMLaneOwnershipPivotViewInput
     {
         public string Drilling_Spacing_Unit { get; set; }
 

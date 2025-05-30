@@ -50,5 +50,27 @@ namespace DataAccess
         }
 
 
+        public static DataTable SelWellsInDSUByDSUHeaderID(string ConnectionString, int DSU_Header_Id)
+        {
+            try
+            {
+                DataSet ds = null;
+
+                SqlParameter[] paramsArray = new SqlParameter[]{
+                                                new SqlParameter("@DSU_Header_Id", DSU_Header_Id)
+                                                };
+
+                ds = SQLHelper.SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "[nriwi].[SelWellsInDSUByDSUHeaderID]", paramsArray);
+                if (ds != null && ds.Tables.Count > 0)
+                    return ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                IRExceptionHandler.HandleException(ProjectType.DAL, ex);
+            }
+            return null;
+        }
+
+
     }
 }

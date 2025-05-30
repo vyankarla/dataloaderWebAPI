@@ -114,7 +114,8 @@ namespace DataAccess
                 foreach (var item in swim_Lane_OwnershipInput)
                 {
                     SqlParameter[] paramsArray = new SqlParameter[]{
-                                                new SqlParameter("@DSU_Swim_Lane_Id", item.DSU_Swim_Lane_Id),
+                                                new SqlParameter("@DSU_Header_ID", item.DSU_Header_ID),
+                                                new SqlParameter("@DSU_Swim_Lane_Number", item.DSU_Swim_Lane_Number),
                                                 new SqlParameter("@Producing_Zone", item.Producing_Zone),
                                                 new SqlParameter("@BPO_WI", item.BPO_WI == null ? Convert.DBNull : item.BPO_WI),
                                                 new SqlParameter("@BPO_NRI", item.BPO_NRI == null ? Convert.DBNull : item.BPO_NRI),

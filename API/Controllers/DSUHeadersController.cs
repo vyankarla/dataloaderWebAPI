@@ -25,7 +25,7 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                List<DSUHeadersExtnl> DSUHeadersExtnl = DSUHeaderService.SelDSUHeaders(p.DBConnection);
+                List<DSUHeadersExtnl> DSUHeadersExtnl = DSUHeaderService.SelDSUHeaders(p.DBConnectionStringForDataProcessing);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 returnData.Data = DSUHeadersExtnl;
@@ -49,7 +49,7 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                List<DSUHeadersExtnl> DSUHeadersExtnl = DSUHeaderService.SelDSUHeaders(p.DBConnection);
+                List<DSUHeadersExtnl> DSUHeadersExtnl = DSUHeaderService.SelDSUHeaders(p.DBConnectionStringForDataProcessing);
 
                 if (DSUHeadersExtnl.Where(x => x.DSU_Header_Id == DSU_Header_Id).ToList().Count > 0)
                 {
@@ -82,7 +82,31 @@ namespace API.Controllers
             ControllerReturnObject returnData = new ControllerReturnObject();
             try
             {
-                List<DSUHeadersExtnlHistory> history = DSUHeaderService.SelDSUHeaderHistoryByDSUHeaderId(p.DBConnection, DSU_Header_Id);
+                List<DSUHeadersExtnlHistory> history = DSUHeaderService.SelDSUHeaderHistoryByDSUHeaderId(p.DBConnectionStringForDataProcessing, DSU_Header_Id);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
+                returnData.Data = history;
+            }
+            catch (Exception ex)
+            {
+                //IRExceptionHandler.HandleException(ProjectType.WebAPI, ex);
+
+                returnData.Status = Convert.ToInt32(WebAPIStatus.Error);
+                returnData.Data = "";
+                returnData.Message = ex.Message;
+            }
+
+            return Ok(returnData);
+        }
+
+        [HttpGet]
+        [ActionName("SelWellsInDSUByDSUHeaderID")]
+        public IHttpActionResult SelWellsInDSUByDSUHeaderID(int DSU_Header_Id)
+        {
+            ControllerReturnObject returnData = new ControllerReturnObject();
+            try
+            {
+                List<DSUHeaderWells> history = DSUHeaderService.SelWellsInDSUByDSUHeaderID(p.DBConnectionStringForDataProcessing, DSU_Header_Id);
 
                 returnData.Status = Convert.ToInt32(WebAPIStatus.Success);
                 returnData.Data = history;
